@@ -84,20 +84,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 exit;
             } else {
                 $errorMessage = urldecode("Role did not match to any valid roles");
-                header("Location: {$Login_page}?message=$errorMessage");
-                exit;
+//                header("Location: {$Login_page}?message=$errorMessage");
+//                exit;
             }
         } else {
             echo '<br>Returning to Login page because ID Password did not matched<br>';
             $errorMessage = urldecode("Email and Password did not match");
-            header("Location: {$Login_page}?message=$errorMessage");
-            exit;
+//            header("Location: {$Login_page}?message=$errorMessage");
+//            exit;
         }
     } else {
         echo '<br>Returning to Login page because The data user provided is not properly validated like 
                 in password: 1-upper_case, 1-lower_case, 1-number, 1-special_character and at least 8 character long it must be provided <br>';
-        header("Location: {$Login_page}?message=$errorMessage");
-        exit;
+//        header("Location: {$Login_page}?message=$errorMessage");
+//        exit;
     }
 
 

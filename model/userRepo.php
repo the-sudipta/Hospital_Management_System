@@ -2,8 +2,8 @@
 
 require_once __DIR__ . '/../model/db_connect.php';
 
+require __DIR__ . '/../routes.php';
 global $routes;
-require '../routes.php';
 
 $database_error_page = $routes["database_error"];
 

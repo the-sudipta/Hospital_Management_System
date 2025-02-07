@@ -2,16 +2,16 @@
 
 require_once __DIR__ . '/../model/db_connect.php';
 
+require __DIR__ . '/../routes.php';
 global $routes;
-require '../routes.php';
 
 $database_error_page = $routes["database_error"];
 
 
-function findAllRis_schedules()
+function findAllTestSchedules()
 {
     $conn = db_conn();
-    $selectQuery = 'SELECT * FROM `ris_schedule`';
+    $selectQuery = 'SELECT * FROM `test_schedule`';
 
     try {
         $result = $conn->query($selectQuery);
@@ -19,7 +19,7 @@ function findAllRis_schedules()
         // Check if the query was successful
         if (!$result) {
 //            throw new Exception("Query failed: " . $conn->error);
-            $_SESSION['error_location'] = "Database -> ris_scheduleRepo -> findAllRis_schedules()";
+            $_SESSION['error_location'] = "Database -> test_scheduleRepo -> findAllTestSchedules()";
             $_SESSION['database_error'] = "Query failed: " . $conn->error;
             global $routes;
             $database_error_page = $routes["database_error"];
@@ -35,9 +35,9 @@ function findAllRis_schedules()
 
         // Check for an empty result set
         if (empty($rows)) {
-//            throw new Exception("No rows found in the 'user' table.");
-            $_SESSION['error_location'] = "Database -> ris_scheduleRepo -> findAllRis_schedules()";
-            $_SESSION['database_error'] = "No rows found in the 'ris_schedule' table.";
+//            throw new Exception("No rows found in the 'test_schedule' table.");
+            $_SESSION['error_location'] = "Database -> test_scheduleRepo -> findAllTestSchedules()";
+            $_SESSION['database_error'] = "No rows found in the 'test_schedule' table.";
             global $routes;
             $database_error_page = $routes["database_error"];
             header("Location: {$database_error_page}");
@@ -45,7 +45,12 @@ function findAllRis_schedules()
 
         return $rows;
     } catch (Exception $e) {
-        echo "Error: " . $e->getMessage();
+//        echo "Error: " . $e->getMessage();
+        $_SESSION['error_location'] = "Database -> test_scheduleRepo -> findAllTestSchedules()";
+        $_SESSION['database_error'] = $e->getMessage();
+        global $routes;
+        $database_error_page = $routes["database_error"];
+        header("Location: {$database_error_page}");
         return null;
     } finally {
         // Close the database connection
@@ -54,10 +59,10 @@ function findAllRis_schedules()
 }
 
 
-function findRis_scheduleByID($id)
+function findTestScheduleByID($id)
 {
     $conn = db_conn();
-    $selectQuery = 'SELECT * FROM `ris_schedule` WHERE `id` = ?';
+    $selectQuery = 'SELECT * FROM `test_schedule` WHERE `id` = ?';
 
     try {
         $stmt = $conn->prepare($selectQuery);
@@ -65,7 +70,7 @@ function findRis_scheduleByID($id)
         // Check if the prepare statement was successful
         if (!$stmt) {
 //            throw new Exception("Prepare statement failed: " . $conn->error);
-            $_SESSION['error_location'] = "Database -> ris_scheduleRepo -> findRis_scheduleByID($id)";
+            $_SESSION['error_location'] = "Database -> test_scheduleRepo -> findTestScheduleByID($id)";
             $_SESSION['database_error'] = "Prepare statement failed: " . $conn->error;
             global $routes;
             $database_error_page = $routes["database_error"];
@@ -87,7 +92,7 @@ function findRis_scheduleByID($id)
         // Check for an empty result set
         if (!$user) {
 //            throw new Exception("No user found with ID: " . $id);
-            $_SESSION['error_location'] = "Database -> ris_scheduleRepo -> findRis_scheduleByID($id)";
+            $_SESSION['error_location'] = "Database -> test_scheduleRepo -> findTestScheduleByID($id)";
             $_SESSION['database_error'] = "No data found with ID: " . $id;
             global $routes;
             $database_error_page = $routes["database_error"];
@@ -100,7 +105,7 @@ function findRis_scheduleByID($id)
         return $user;
     } catch (Exception $e) {
 //        echo "Error: " . $e->getMessage();
-        $_SESSION['error_location'] = "Database -> ris_scheduleRepo -> findRis_scheduleByID($id)";
+        $_SESSION['error_location'] = "Database -> test_scheduleRepo -> findTestScheduleByID($id)";
         $_SESSION['database_error'] = $e->getMessage();
         global $routes;
         $database_error_page = $routes["database_error"];
@@ -112,10 +117,10 @@ function findRis_scheduleByID($id)
     }
 }
 
-function findAllRis_schedulesByHis_patientID($his_patient_id)
+function findAllTestSchedulesByPatientID($patient_id)
 {
     $conn = db_conn();
-    $selectQuery = 'SELECT * FROM `ris_schedule` WHERE `his_patient_id` = '.$his_patient_id;
+    $selectQuery = 'SELECT * FROM `test_schedule` WHERE `patient_id` = '.$patient_id;
 
     try {
         $result = $conn->query($selectQuery);
@@ -123,7 +128,7 @@ function findAllRis_schedulesByHis_patientID($his_patient_id)
         // Check if the query was successful
         if (!$result) {
 //            throw new Exception("Query failed: " . $conn->error);
-            $_SESSION['error_location'] = "Database -> ris_scheduleRepo -> findAllRis_schedulesByRis_ScheduleID()";
+            $_SESSION['error_location'] = "Database -> test_scheduleRepo -> findAllTestSchedulesByPatientID()";
             $_SESSION['database_error'] = "Query failed: " . $conn->error;
             global $routes;
             $database_error_page = $routes["database_error"];
@@ -140,8 +145,8 @@ function findAllRis_schedulesByHis_patientID($his_patient_id)
         // Check for an empty result set
         if (empty($rows)) {
 //            throw new Exception("No rows found in the 'appointment' table for that his_patient_id.");
-            $_SESSION['error_location'] = "Database -> ris_scheduleRepo -> findAllRis_scheduleByPatientID()";
-            $_SESSION['database_error'] = "No rows found in the 'ris_schedule' table for that his_patient_id.";
+            $_SESSION['error_location'] = "Database -> test_scheduleRepo -> findAllTestSchedulesByPatientID()";
+            $_SESSION['database_error'] = "No rows found in the 'test_schedule' table for that patient_id.";
             global $routes;
             $database_error_page = $routes["database_error"];
             header("Location: {$database_error_page}");
@@ -150,7 +155,7 @@ function findAllRis_schedulesByHis_patientID($his_patient_id)
         return $rows;
     } catch (Exception $e) {
 //        echo "Error: " . $e->getMessage();
-        $_SESSION['error_location'] = "Database -> ris_scheduleRepo -> findAllRis_scheduleByPatientID()";
+        $_SESSION['error_location'] = "Database -> test_scheduleRepo -> findAllTestSchedulesByPatientID()";
         $_SESSION['database_error'] = $e->getMessage();
         global $routes;
         $database_error_page = $routes["database_error"];
@@ -163,14 +168,65 @@ function findAllRis_schedulesByHis_patientID($his_patient_id)
 }
 
 
-function updateRis_schedule($exam_type, $scheduled_date, $id)
+function findAllTestSchedulesByWhoBookedScheduleID($booked_by_id)
+{
+    $conn = db_conn();
+    $selectQuery = 'SELECT * FROM `test_schedule` WHERE `booked_by_id` = '.$booked_by_id;
+
+    try {
+        $result = $conn->query($selectQuery);
+
+        // Check if the query was successful
+        if (!$result) {
+//            throw new Exception("Query failed: " . $conn->error);
+            $_SESSION['error_location'] = "Database -> test_scheduleRepo -> findAllTestSchedulesByPatientID()";
+            $_SESSION['database_error'] = "Query failed: " . $conn->error;
+            global $routes;
+            $database_error_page = $routes["database_error"];
+            header("Location: {$database_error_page}");
+        }
+
+        $rows = array();
+
+        // Fetch rows one by one
+        while ($row = $result->fetch_assoc()) {
+            $rows[] = $row;
+        }
+
+        // Check for an empty result set
+        if (empty($rows)) {
+//            throw new Exception("No rows found in the 'appointment' table for that his_patient_id.");
+            $_SESSION['error_location'] = "Database -> test_scheduleRepo -> findAllTestSchedulesByPatientID()";
+            $_SESSION['database_error'] = "No rows found in the 'test_schedule' table for that booked_by_id.";
+            global $routes;
+            $database_error_page = $routes["database_error"];
+            header("Location: {$database_error_page}");
+        }
+
+        return $rows;
+    } catch (Exception $e) {
+//        echo "Error: " . $e->getMessage();
+        $_SESSION['error_location'] = "Database -> test_scheduleRepo -> findAllTestSchedulesByPatientID()";
+        $_SESSION['database_error'] = $e->getMessage();
+        global $routes;
+        $database_error_page = $routes["database_error"];
+        header("Location: {$database_error_page}");
+        return null;
+    } finally {
+        // Close the database connection
+        $conn->close();
+    }
+}
+
+
+function updateTestSchedule($exam_type, $date, $id)
 {
     $conn = db_conn();
 
     // Construct the SQL query
-    $updateQuery = "UPDATE `ris_schedule` SET 
+    $updateQuery = "UPDATE `test_schedule` SET 
                     exam_type =?,
-                    scheduled_date =?
+                    date =?
                     WHERE id = ?";
 
     try {
@@ -180,7 +236,7 @@ function updateRis_schedule($exam_type, $scheduled_date, $id)
         // Check if the prepare statement was successful
         if (!$stmt) {
 //            throw new Exception("Prepare statement failed: " . $conn->error);
-            $_SESSION['error_location'] = "Database -> ris_scheduleRepo -> updateRis_schedule()";
+            $_SESSION['error_location'] = "Database -> test_scheduleRepo -> updateTestSchedule()";
             $_SESSION['database_error'] = "Prepare statement failed: " . $conn->error;
             global $routes;
             $database_error_page = $routes["database_error"];
@@ -188,7 +244,7 @@ function updateRis_schedule($exam_type, $scheduled_date, $id)
         }
 
         // Bind parameters
-        $stmt->bind_param('ssi', $exam_type, $scheduled_date, $id);
+        $stmt->bind_param('ssi', $exam_type, $date, $id);
 
         // Execute the query
         $stmt->execute();
@@ -198,7 +254,7 @@ function updateRis_schedule($exam_type, $scheduled_date, $id)
     } catch (Exception $e) {
         // Handle the exception, you might want to log it or return false
 //        echo "Error: " . $e->getMessage();
-        $_SESSION['error_location'] = "Database -> ris_scheduleRepo -> updateRis_schedule()";
+        $_SESSION['error_location'] = "Database -> test_scheduleRepo -> updateTestSchedule()";
         $_SESSION['database_error'] = $e->getMessage();
         global $routes;
         $database_error_page = $routes["database_error"];
@@ -213,13 +269,14 @@ function updateRis_schedule($exam_type, $scheduled_date, $id)
     }
 }
 
-function updateRis_scheduleDate($scheduled_date, $id)
+
+function updateTestScheduleDate($date, $id)
 {
     $conn = db_conn();
 
     // Construct the SQL query
-    $updateQuery = "UPDATE `ris_schedule` SET 
-                    scheduled_date =?
+    $updateQuery = "UPDATE `test_schedule` SET 
+                    date =?
                     WHERE id = ?";
 
     try {
@@ -229,7 +286,7 @@ function updateRis_scheduleDate($scheduled_date, $id)
         // Check if the prepare statement was successful
         if (!$stmt) {
 //            throw new Exception("Prepare statement failed: " . $conn->error);
-            $_SESSION['error_location'] = "Database -> ris_scheduleRepo -> updateRis_schedule()";
+            $_SESSION['error_location'] = "Database -> test_scheduleRepo -> updateTestScheduleDate()";
             $_SESSION['database_error'] = "Prepare statement failed: " . $conn->error;
             global $routes;
             $database_error_page = $routes["database_error"];
@@ -237,7 +294,7 @@ function updateRis_scheduleDate($scheduled_date, $id)
         }
 
         // Bind parameters
-        $stmt->bind_param('si', $scheduled_date, $id);
+        $stmt->bind_param('si', $date, $id);
 
         // Execute the query
         $stmt->execute();
@@ -247,7 +304,7 @@ function updateRis_scheduleDate($scheduled_date, $id)
     } catch (Exception $e) {
         // Handle the exception, you might want to log it or return false
 //        echo "Error: " . $e->getMessage();
-        $_SESSION['error_location'] = "Database -> ris_scheduleRepo -> updateRis_schedule()";
+        $_SESSION['error_location'] = "Database -> test_scheduleRepo -> updateTestScheduleDate()";
         $_SESSION['database_error'] = $e->getMessage();
         global $routes;
         $database_error_page = $routes["database_error"];
@@ -263,12 +320,11 @@ function updateRis_scheduleDate($scheduled_date, $id)
 }
 
 
-
-function deleteRis_schedule($id) {
+function deleteTestSchedule($id) {
     $conn = db_conn();
 
     // Construct the SQL query
-    $updateQuery = "DELETE FROM `ris_schedule`
+    $updateQuery = "DELETE FROM `test_schedule`
                     WHERE id = ?";
 
     try {
@@ -278,7 +334,7 @@ function deleteRis_schedule($id) {
         // Check if the prepare statement was successful
         if (!$stmt) {
 //            throw new Exception("Prepare statement failed: " . $conn->error);
-            $_SESSION['error_location'] = "Database -> ris_scheduleRepo -> deleteRis_schedule()";
+            $_SESSION['error_location'] = "Database -> test_scheduleRepo -> deleteTestSchedule()";
             $_SESSION['database_error'] = "Prepare statement failed: " . $conn->error;
             global $routes;
             $database_error_page = $routes["database_error"];
@@ -296,7 +352,7 @@ function deleteRis_schedule($id) {
     } catch (Exception $e) {
         // Handle the exception, you might want to log it or return false
 //        echo "Error: " . $e->getMessage();
-        $_SESSION['error_location'] = "Database -> ris_scheduleRepo -> deleteRis_schedule()";
+        $_SESSION['error_location'] = "Database -> test_scheduleRepo -> deleteTestSchedule()";
         $_SESSION['database_error'] = $e->getMessage();
         global $routes;
         $database_error_page = $routes["database_error"];
@@ -312,18 +368,18 @@ function deleteRis_schedule($id) {
 }
 
 
-function createRis_schedule($his_patient_id, $user_id, $exam_type, $scheduled_date) {
+function createTestSchedule($exam_type, $date, $patient_id, $booked_by_id) {
     $conn = db_conn();
 
     // Construct the SQL query
-    $insertQuery = "INSERT INTO `ris_schedule` (his_patient_id, user_id, exam_type, scheduled_date) VALUES (?, ?, ?, ?)";
+    $insertQuery = "INSERT INTO `test_schedule` (exam_type, date, patient_id, booked_by_id) VALUES (?, ?, ?, ?)";
 
     try {
         // Prepare the statement
         $stmt = $conn->prepare($insertQuery);
 
         // Bind parameters
-        $stmt->bind_param('iiss', $his_patient_id, $user_id, $exam_type, $scheduled_date);
+        $stmt->bind_param('ssii', $exam_type, $date, $patient_id, $booked_by_id);
 
         // Execute the query
         $stmt->execute();
@@ -338,7 +394,7 @@ function createRis_schedule($his_patient_id, $user_id, $exam_type, $scheduled_da
     } catch (Exception $e) {
         // Handle the exception, you might want to log it or return false
 //        echo "Error: " . $e->getMessage();
-        $_SESSION['error_location'] = "Database ->  ris_scheduleRepo -> createRis_schedule()";
+        $_SESSION['error_location'] = "Database ->  test_scheduleRepo -> createTestSchedule()";
         $_SESSION['database_error'] = $e->getMessage();
         global $routes;
         $database_error_page = $routes["database_error"];

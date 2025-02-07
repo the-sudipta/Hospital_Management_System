@@ -6,6 +6,7 @@ require '../routes.php';
 require_once __DIR__ . '/../model/CalculationRepo.php';
 require_once __DIR__ . '/../view/Data_Provider.php';
 require_once __DIR__ . '/../model/userRepo.php';
+require_once __DIR__ . '/../model/logRepo.php';
 
 // Define inline CSS and Bootstrap link
 $style = "
@@ -73,7 +74,8 @@ echo '<div class="mt-5">';
 echo '<h3 class="text-primary">Functionality: Login</h3>';
 
 // Fetch single user
-$user = findUserByEmailAndPassword('admin1@hospital.com', '0testPass@'); // Assuming this function returns an array of user data
+$user = findUserByEmailAndPassword('test3@hospital.com', '0testPass@'); // Assuming this function returns an array of user data
+// Hashed Pass = $2y$10$3PLHVPM.1sbukC7Y.tV/lOLBZ.DWvLiwzTLIZ81vAaaRSYO0/WB6O
 if ($user) {
     echo '<div class="user-info">';
     echo '<h4>User Information</h4>';
@@ -111,6 +113,35 @@ if ($single_user) {
     echo '</div>';
 } else {
     echo '<div class="alert alert-warning mt-3">User not found.</div>';
+}
+echo '<h5 class=""><b>Functionality Decision : Working</b></h5>';
+echo '</div>';
+
+
+echo '<div class="mt-5">';
+echo '<h3 class="text-primary">Functionality: Find All Logs</h3>';
+
+// Fetch single user
+$logs = findAllLogs();
+if (is_array($logs) && !empty($logs)) {
+    echo '<div class="table-responsive">';
+    echo '<table class="table table-bordered table-hover mt-3">';
+    echo '<thead class="table-dark">';
+    echo '<tr><th>ID</th><th>action</th><th>timestamp</th><th>user_id</th></tr>';
+    echo '</thead><tbody>';
+
+    foreach ($logs as $log) {
+        echo '<tr>';
+        echo '<td>' . htmlspecialchars($log['id']) . '</td>';
+        echo '<td>' . htmlspecialchars($log['action']) . '</td>';
+        echo '<td>' . htmlspecialchars($log['timestamp']) . '</td>';
+        echo '<td>' . htmlspecialchars($log['user_id']) . '</td>';
+        echo '</tr>';
+    }
+
+    echo '</tbody></table></div>';
+} else {
+    echo '<div class="alert alert-warning mt-3">No logs found.</div>';
 }
 echo '<h5 class=""><b>Functionality Decision : Working</b></h5>';
 echo '</div>';

@@ -2,8 +2,8 @@
 
 require_once __DIR__ . '/../model/db_connect.php';
 
+require __DIR__ . '/../routes.php';
 global $routes;
-require '../routes.php';
 
 $database_error_page = $routes["database_error"];
 
@@ -11,7 +11,7 @@ $database_error_page = $routes["database_error"];
 function findAllMessages()
 {
     $conn = db_conn();
-    $selectQuery = 'SELECT * FROM `his_message`';
+    $selectQuery = 'SELECT * FROM `message`';
 
     try {
         $result = $conn->query($selectQuery);
@@ -19,7 +19,7 @@ function findAllMessages()
         // Check if the query was successful
         if (!$result) {
 //            throw new Exception("Query failed: " . $conn->error);
-            $_SESSION['error_location'] = "Database -> his_messageRepo -> findAllMessages()";
+            $_SESSION['error_location'] = "Database -> messageRepo -> findAllMessages()";
             $_SESSION['database_error'] = "Query failed: " . $conn->error;
             global $routes;
             $database_error_page = $routes["database_error"];
@@ -36,8 +36,8 @@ function findAllMessages()
         // Check for an empty result set
         if (empty($rows)) {
 //            throw new Exception("No rows found in the 'user' table.");
-            $_SESSION['error_location'] = "Database -> his_messageRepo -> findAllMessages()";
-            $_SESSION['database_error'] = "No rows found in the 'his_message' table.";
+            $_SESSION['error_location'] = "Database -> messageRepo -> findAllMessages()";
+            $_SESSION['database_error'] = "No rows found in the 'message' table.";
             global $routes;
             $database_error_page = $routes["database_error"];
             header("Location: {$database_error_page}");
@@ -45,7 +45,12 @@ function findAllMessages()
 
         return $rows;
     } catch (Exception $e) {
-        echo "Error: " . $e->getMessage();
+//        echo "Error: " . $e->getMessage();
+        $_SESSION['error_location'] = "Database -> messageRepo -> findAllMessages()";
+        $_SESSION['database_error'] = $e->getMessage();
+        global $routes;
+        $database_error_page = $routes["database_error"];
+        header("Location: {$database_error_page}");
         return null;
     } finally {
         // Close the database connection
@@ -57,7 +62,7 @@ function findAllMessages()
 function findMessageByID($id)
 {
     $conn = db_conn();
-    $selectQuery = 'SELECT * FROM `his_message` WHERE `id` = ?';
+    $selectQuery = 'SELECT * FROM `message` WHERE `id` = ?';
 
     try {
         $stmt = $conn->prepare($selectQuery);
@@ -65,7 +70,7 @@ function findMessageByID($id)
         // Check if the prepare statement was successful
         if (!$stmt) {
 //            throw new Exception("Prepare statement failed: " . $conn->error);
-            $_SESSION['error_location'] = "Database -> his_messageRepo -> findMessageByID($id)";
+            $_SESSION['error_location'] = "Database -> messageRepo -> findMessageByID($id)";
             $_SESSION['database_error'] = "Prepare statement failed: " . $conn->error;
             global $routes;
             $database_error_page = $routes["database_error"];
@@ -87,7 +92,7 @@ function findMessageByID($id)
         // Check for an empty result set
         if (!$user) {
 //            throw new Exception("No user found with ID: " . $id);
-            $_SESSION['error_location'] = "Database -> his_messageRepo -> findMessageByID($id)";
+            $_SESSION['error_location'] = "Database -> messageRepo -> findMessageByID($id)";
             $_SESSION['database_error'] = "No data found with ID: " . $id;
             global $routes;
             $database_error_page = $routes["database_error"];
@@ -100,7 +105,7 @@ function findMessageByID($id)
         return $user;
     } catch (Exception $e) {
 //        echo "Error: " . $e->getMessage();
-        $_SESSION['error_location'] = "Database -> his_messageRepo -> findMessageByID($id)";
+        $_SESSION['error_location'] = "Database -> messageRepo -> findMessageByID($id)";
         $_SESSION['database_error'] = $e->getMessage();
         global $routes;
         $database_error_page = $routes["database_error"];
@@ -115,7 +120,7 @@ function findMessageByID($id)
 function findAllMessagesByReceiverUserID($receiver_id)
 {
     $conn = db_conn();
-    $selectQuery = 'SELECT * FROM `his_message` WHERE `receiver_id` = '.$receiver_id;
+    $selectQuery = 'SELECT * FROM `message` WHERE `receiver_id` = '.$receiver_id;
 
     try {
         $result = $conn->query($selectQuery);
@@ -123,7 +128,7 @@ function findAllMessagesByReceiverUserID($receiver_id)
         // Check if the query was successful
         if (!$result) {
 //            throw new Exception("Query failed: " . $conn->error);
-            $_SESSION['error_location'] = "Database -> his_messageRepo -> findAllMessagesByReceiverUserID()";
+            $_SESSION['error_location'] = "Database -> messageRepo -> findAllMessagesByReceiverUserID()";
             $_SESSION['database_error'] = "Query failed: " . $conn->error;
             global $routes;
             $database_error_page = $routes["database_error"];
@@ -140,8 +145,8 @@ function findAllMessagesByReceiverUserID($receiver_id)
         // Check for an empty result set
         if (empty($rows)) {
 //            throw new Exception("No rows found in the 'appointment' table for that his_patient_id.");
-            $_SESSION['error_location'] = "Database -> his_messageRepo -> findAllMessagesByReceiverUserID()";
-            $_SESSION['database_error'] = "No rows found in the 'his_message' table for that his_patient_id.";
+            $_SESSION['error_location'] = "Database -> messageRepo -> findAllMessagesByReceiverUserID()";
+            $_SESSION['database_error'] = "No rows found in the 'message' table for that receiver_id that is basically a user_id.";
             global $routes;
             $database_error_page = $routes["database_error"];
             header("Location: {$database_error_page}");
@@ -161,7 +166,7 @@ function findAllMessagesByReceiverUserID($receiver_id)
 function findAllMessagesBySenderUserID($sender_id)
 {
     $conn = db_conn();
-    $selectQuery = 'SELECT * FROM `his_message` WHERE `sender_id` = '.$sender_id;
+    $selectQuery = 'SELECT * FROM `message` WHERE `sender_id` = '.$sender_id;
 
     try {
         $result = $conn->query($selectQuery);
@@ -169,7 +174,7 @@ function findAllMessagesBySenderUserID($sender_id)
         // Check if the query was successful
         if (!$result) {
 //            throw new Exception("Query failed: " . $conn->error);
-            $_SESSION['error_location'] = "Database -> his_messageRepo -> findAllMessagesBySenderUserID()";
+            $_SESSION['error_location'] = "Database -> messageRepo -> findAllMessagesBySenderUserID()";
             $_SESSION['database_error'] = "Query failed: " . $conn->error;
             global $routes;
             $database_error_page = $routes["database_error"];
@@ -186,8 +191,8 @@ function findAllMessagesBySenderUserID($sender_id)
         // Check for an empty result set
         if (empty($rows)) {
 //            throw new Exception("No rows found in the 'appointment' table for that his_patient_id.");
-            $_SESSION['error_location'] = "Database -> his_messageRepo -> findAllMessagesBySenderUserID()";
-            $_SESSION['database_error'] = "No rows found in the 'his_message' table for that his_patient_id.";
+            $_SESSION['error_location'] = "Database -> messageRepo -> findAllMessagesBySenderUserID()";
+            $_SESSION['database_error'] = "No rows found in the 'message' table for that sender_id.";
             global $routes;
             $database_error_page = $routes["database_error"];
             header("Location: {$database_error_page}");
@@ -195,7 +200,12 @@ function findAllMessagesBySenderUserID($sender_id)
 
         return $rows;
     } catch (Exception $e) {
-        echo "Error: " . $e->getMessage();
+//        echo "Error: " . $e->getMessage();
+        $_SESSION['error_location'] = "Database -> messageRepo -> findAllMessagesBySenderUserID()";
+        $_SESSION['database_error'] = $e->getMessage();
+        global $routes;
+        $database_error_page = $routes["database_error"];
+        header("Location: {$database_error_page}");
         return null;
     } finally {
         // Close the database connection
@@ -209,7 +219,7 @@ function updateMessage($message, $id)
     $conn = db_conn();
 
     // Construct the SQL query
-    $updateQuery = "UPDATE `his_message` SET 
+    $updateQuery = "UPDATE `message` SET 
                     message =?
                     WHERE id = ?";
 
@@ -220,7 +230,7 @@ function updateMessage($message, $id)
         // Check if the prepare statement was successful
         if (!$stmt) {
 //            throw new Exception("Prepare statement failed: " . $conn->error);
-            $_SESSION['error_location'] = "Database -> his_messageRepo -> updateMessage()";
+            $_SESSION['error_location'] = "Database -> messageRepo -> updateMessage()";
             $_SESSION['database_error'] = "Prepare statement failed: " . $conn->error;
             global $routes;
             $database_error_page = $routes["database_error"];
@@ -228,7 +238,7 @@ function updateMessage($message, $id)
         }
 
         // Bind parameters
-        $stmt->bind_param('sssi', $amount, $status, $date, $id);
+        $stmt->bind_param('si', $message, $id);
 
         // Execute the query
         $stmt->execute();
@@ -238,7 +248,7 @@ function updateMessage($message, $id)
     } catch (Exception $e) {
         // Handle the exception, you might want to log it or return false
 //        echo "Error: " . $e->getMessage();
-        $_SESSION['error_location'] = "Database -> his_messageRepo -> updateMessage()";
+        $_SESSION['error_location'] = "Database -> messageRepo -> updateMessage()";
         $_SESSION['database_error'] = $e->getMessage();
         global $routes;
         $database_error_page = $routes["database_error"];
@@ -258,7 +268,7 @@ function deleteMessage($id) {
     $conn = db_conn();
 
     // Construct the SQL query
-    $updateQuery = "DELETE FROM `his_message`
+    $updateQuery = "DELETE FROM `message`
                     WHERE id = ?";
 
     try {
@@ -268,7 +278,7 @@ function deleteMessage($id) {
         // Check if the prepare statement was successful
         if (!$stmt) {
 //            throw new Exception("Prepare statement failed: " . $conn->error);
-            $_SESSION['error_location'] = "Database -> his_messageRepo -> deleteMessage()";
+            $_SESSION['error_location'] = "Database -> messageRepo -> deleteMessage()";
             $_SESSION['database_error'] = "Prepare statement failed: " . $conn->error;
             global $routes;
             $database_error_page = $routes["database_error"];
@@ -286,7 +296,7 @@ function deleteMessage($id) {
     } catch (Exception $e) {
         // Handle the exception, you might want to log it or return false
 //        echo "Error: " . $e->getMessage();
-        $_SESSION['error_location'] = "Database -> his_messageRepo -> deleteMessage()";
+        $_SESSION['error_location'] = "Database -> messageRepo -> deleteMessage()";
         $_SESSION['database_error'] = $e->getMessage();
         global $routes;
         $database_error_page = $routes["database_error"];
@@ -302,18 +312,18 @@ function deleteMessage($id) {
 }
 
 
-function createMessage($sender_id, $receiver_id, $message, $timestamp) {
+function createMessage($message, $timestamp, $sender_id, $receiver_id) {
     $conn = db_conn();
 
     // Construct the SQL query
-    $insertQuery = "INSERT INTO `his_message` (sender_id, receiver_id, message, timestamp) VALUES (?, ?, ?, ?)";
+    $insertQuery = "INSERT INTO `message` (message, timestamp, sender_id, receiver_id) VALUES (?, ?, ?, ?)";
 
     try {
         // Prepare the statement
         $stmt = $conn->prepare($insertQuery);
 
         // Bind parameters
-        $stmt->bind_param('iiss', $sender_id, $receiver_id, $message, $timestamp);
+        $stmt->bind_param('ssii', $message, $timestamp, $sender_id, $receiver_id);
 
         // Execute the query
         $stmt->execute();
@@ -328,7 +338,7 @@ function createMessage($sender_id, $receiver_id, $message, $timestamp) {
     } catch (Exception $e) {
         // Handle the exception, you might want to log it or return false
 //        echo "Error: " . $e->getMessage();
-        $_SESSION['error_location'] = "Database ->  his_messageRepo -> createMessage()";
+        $_SESSION['error_location'] = "Database ->  messageRepo -> createMessage()";
         $_SESSION['database_error'] = $e->getMessage();
         global $routes;
         $database_error_page = $routes["database_error"];

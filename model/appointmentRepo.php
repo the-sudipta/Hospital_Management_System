@@ -2,16 +2,16 @@
 
 require_once __DIR__ . '/../model/db_connect.php';
 
+require __DIR__ . '/../routes.php';
 global $routes;
-require '../routes.php';
 
 $database_error_page = $routes["database_error"];
 
 
-function findAllPatients()
+function findAllAppointments()
 {
     $conn = db_conn();
-    $selectQuery = 'SELECT * FROM `his_patient`';
+    $selectQuery = 'SELECT * FROM `appointment`';
 
     try {
         $result = $conn->query($selectQuery);
@@ -19,7 +19,7 @@ function findAllPatients()
         // Check if the query was successful
         if (!$result) {
 //            throw new Exception("Query failed: " . $conn->error);
-            $_SESSION['error_location'] = "Database -> his_patientRepo -> findAllPatients()";
+            $_SESSION['error_location'] = "Database -> appointmentRepo -> findAllAppointments()";
             $_SESSION['database_error'] = "Query failed: " . $conn->error;
             global $routes;
             $database_error_page = $routes["database_error"];
@@ -35,9 +35,9 @@ function findAllPatients()
 
         // Check for an empty result set
         if (empty($rows)) {
-//            throw new Exception("No rows found in the 'user' table.");
-            $_SESSION['error_location'] = "Database -> userRepo -> findAllPatients()";
-            $_SESSION['database_error'] = "No rows found in the 'his_patient' table.";
+//            throw new Exception("No rows found in the 'appointment' table.");
+            $_SESSION['error_location'] = "Database -> appointmentRepo -> findAllAppointments()";
+            $_SESSION['database_error'] = "No rows found in the 'appointment' table.";
             global $routes;
             $database_error_page = $routes["database_error"];
             header("Location: {$database_error_page}");
@@ -54,10 +54,10 @@ function findAllPatients()
 }
 
 
-function findPatientByID($id)
+function findAppointmentByID($id)
 {
     $conn = db_conn();
-    $selectQuery = 'SELECT * FROM `his_patient` WHERE `id` = ?';
+    $selectQuery = 'SELECT * FROM `appointment` WHERE `id` = ?';
 
     try {
         $stmt = $conn->prepare($selectQuery);
@@ -65,7 +65,7 @@ function findPatientByID($id)
         // Check if the prepare statement was successful
         if (!$stmt) {
 //            throw new Exception("Prepare statement failed: " . $conn->error);
-            $_SESSION['error_location'] = "Database -> userRepo -> findPatientByID()";
+            $_SESSION['error_location'] = "Database -> appointmentRepo -> findAppointmentByID($id)";
             $_SESSION['database_error'] = "Prepare statement failed: " . $conn->error;
             global $routes;
             $database_error_page = $routes["database_error"];
@@ -87,8 +87,8 @@ function findPatientByID($id)
         // Check for an empty result set
         if (!$user) {
 //            throw new Exception("No user found with ID: " . $id);
-            $_SESSION['error_location'] = "Database -> his_patientRepo -> findPatientByID()";
-            $_SESSION['database_error'] = "No patient info found with ID: " . $id;
+            $_SESSION['error_location'] = "Database -> appointmentRepo -> findAppointmentByID($id)";
+            $_SESSION['database_error'] = "No data found with ID: " . $id;
             global $routes;
             $database_error_page = $routes["database_error"];
             header("Location: {$database_error_page}");
@@ -100,7 +100,7 @@ function findPatientByID($id)
         return $user;
     } catch (Exception $e) {
 //        echo "Error: " . $e->getMessage();
-        $_SESSION['error_location'] = "Database -> userRepo -> findPatientByID()";
+        $_SESSION['error_location'] = "Database -> appointmentRepo -> findAppointmentByID($id)";
         $_SESSION['database_error'] = $e->getMessage();
         global $routes;
         $database_error_page = $routes["database_error"];
@@ -113,18 +113,65 @@ function findPatientByID($id)
 }
 
 
+function findAllAppointmentsByPatientID($patient_id)
+{
+    $conn = db_conn();
+    $selectQuery = 'SELECT * FROM `appointment` WHERE `patient_id` = '.$patient_id;
 
-function updatePatient($name, $dob, $gender, $contact, $address, $id)
+    try {
+        $result = $conn->query($selectQuery);
+
+        // Check if the query was successful
+        if (!$result) {
+//            throw new Exception("Query failed: " . $conn->error);
+            $_SESSION['error_location'] = "Database -> appointmentRepo -> findAllAppointmentsByPatientID()";
+            $_SESSION['database_error'] = "Query failed: " . $conn->error;
+            global $routes;
+            $database_error_page = $routes["database_error"];
+            header("Location: {$database_error_page}");
+        }
+
+        $rows = array();
+
+        // Fetch rows one by one
+        while ($row = $result->fetch_assoc()) {
+            $rows[] = $row;
+        }
+
+        // Check for an empty result set
+        if (empty($rows)) {
+//            throw new Exception("No rows found in the 'appointment' table for that his_patient_id.");
+            $_SESSION['error_location'] = "Database -> appointmentRepo -> findAllAppointmentsByPatientID()";
+            $_SESSION['database_error'] = "No rows found in the 'appointment' table for that patient_id.";
+            global $routes;
+            $database_error_page = $routes["database_error"];
+            header("Location: {$database_error_page}");
+        }
+
+        return $rows;
+    } catch (Exception $e) {
+//        echo "Error: " . $e->getMessage();
+        $_SESSION['error_location'] = "Database -> appointmentRepo -> findAllAppointmentsByPatientID()";
+        $_SESSION['database_error'] = $e->getMessage();
+        global $routes;
+        $database_error_page = $routes["database_error"];
+        header("Location: {$database_error_page}");
+        return null;
+    } finally {
+        // Close the database connection
+        $conn->close();
+    }
+}
+
+
+function updateAppointment($appointment_date, $status, $id)
 {
     $conn = db_conn();
 
     // Construct the SQL query
-    $updateQuery = "UPDATE `his_patient` SET 
-                    name = ?,
-                    dob = ?,
-                    gender = ?,
-                    contact =?,
-                    address =?
+    $updateQuery = "UPDATE `appointment` SET 
+                    appointment_date =?,
+                    status =?
                     WHERE id = ?";
 
     try {
@@ -134,7 +181,7 @@ function updatePatient($name, $dob, $gender, $contact, $address, $id)
         // Check if the prepare statement was successful
         if (!$stmt) {
 //            throw new Exception("Prepare statement failed: " . $conn->error);
-            $_SESSION['error_location'] = "Database -> his_PatientRepo -> updatePatient()";
+            $_SESSION['error_location'] = "Database -> appointmentRepo -> updateAppointment()";
             $_SESSION['database_error'] = "Prepare statement failed: " . $conn->error;
             global $routes;
             $database_error_page = $routes["database_error"];
@@ -142,7 +189,7 @@ function updatePatient($name, $dob, $gender, $contact, $address, $id)
         }
 
         // Bind parameters
-        $stmt->bind_param('sssssi', $name, $dob, $gender, $contact, $address, $id);
+        $stmt->bind_param('ssi', $appointment_date, $status, $id);
 
         // Execute the query
         $stmt->execute();
@@ -152,7 +199,7 @@ function updatePatient($name, $dob, $gender, $contact, $address, $id)
     } catch (Exception $e) {
         // Handle the exception, you might want to log it or return false
 //        echo "Error: " . $e->getMessage();
-        $_SESSION['error_location'] = "Database -> userRepo -> updateUser()";
+        $_SESSION['error_location'] = "Database -> appointmentRepo -> updateAppointment()";
         $_SESSION['database_error'] = $e->getMessage();
         global $routes;
         $database_error_page = $routes["database_error"];
@@ -168,11 +215,11 @@ function updatePatient($name, $dob, $gender, $contact, $address, $id)
 }
 
 
-function deletePatient($id) {
+function deleteAppointment($id) {
     $conn = db_conn();
 
     // Construct the SQL query
-    $updateQuery = "DELETE FROM `his_patient`
+    $updateQuery = "DELETE FROM `appointment`
                     WHERE id = ?";
 
     try {
@@ -182,7 +229,7 @@ function deletePatient($id) {
         // Check if the prepare statement was successful
         if (!$stmt) {
 //            throw new Exception("Prepare statement failed: " . $conn->error);
-            $_SESSION['error_location'] = "Database -> his_patientRepo -> deletePatient()";
+            $_SESSION['error_location'] = "Database -> appointmentRepo -> deleteAppointment()";
             $_SESSION['database_error'] = "Prepare statement failed: " . $conn->error;
             global $routes;
             $database_error_page = $routes["database_error"];
@@ -200,7 +247,7 @@ function deletePatient($id) {
     } catch (Exception $e) {
         // Handle the exception, you might want to log it or return false
 //        echo "Error: " . $e->getMessage();
-        $_SESSION['error_location'] = "Database -> his_patientRepo -> deletePatient()";
+        $_SESSION['error_location'] = "Database -> appointmentRepo -> deleteAppointment()";
         $_SESSION['database_error'] = $e->getMessage();
         global $routes;
         $database_error_page = $routes["database_error"];
@@ -216,18 +263,18 @@ function deletePatient($id) {
 }
 
 
-function createPatient($name, $dob, $gender, $contact, $address) {
+function createAppointment($appointment_date, $status, $patient_id, $booked_by_id) {
     $conn = db_conn();
 
     // Construct the SQL query
-    $insertQuery = "INSERT INTO `his_patient` (name, dob, gender, contact, address) VALUES (?, ?, ?, ?, ?)";
+    $insertQuery = "INSERT INTO `appointment` (appointment_date, status, patient_id, booked_by_id) VALUES (?, ?, ?, ?)";
 
     try {
         // Prepare the statement
         $stmt = $conn->prepare($insertQuery);
 
         // Bind parameters
-        $stmt->bind_param('sssss', $name, $dob, $gender, $contact, $address);
+        $stmt->bind_param('ssii', $appointment_date, $status, $patient_id, $booked_by_id);
 
         // Execute the query
         $stmt->execute();
@@ -242,7 +289,7 @@ function createPatient($name, $dob, $gender, $contact, $address) {
     } catch (Exception $e) {
         // Handle the exception, you might want to log it or return false
 //        echo "Error: " . $e->getMessage();
-        $_SESSION['error_location'] = "Database -> his_patientRepo -> createPatient()";
+        $_SESSION['error_location'] = "Database ->  appointmentRepo -> createAppointment()";
         $_SESSION['database_error'] = $e->getMessage();
         global $routes;
         $database_error_page = $routes["database_error"];

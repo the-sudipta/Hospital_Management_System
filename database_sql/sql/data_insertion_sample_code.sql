@@ -1,138 +1,71 @@
--- Insert into `user`
-INSERT INTO `user` (`email`, `password`, `role`, `created_at`, `status`) VALUES
-('admin1@example.com', '$2y$10$3PLHVPM.1sbukC7Y.tV/lOLBZ.DWvLiwzTLIZ81vAaaRSYO0/WB6O', 'admin', '2025-02-06', 'active'),
-('doctor1@example.com', '$2y$10$3PLHVPM.1sbukC7Y.tV/lOLBZ.DWvLiwzTLIZ81vAaaRSYO0/WB6O', 'doctor', '2025-02-06', 'active'),
-('nurse1@example.com', '$2y$10$3PLHVPM.1sbukC7Y.tV/lOLBZ.DWvLiwzTLIZ81vAaaRSYO0/WB6O', 'nurse', '2025-02-06', 'active'),
-('reception@example.com', '$2y$10$3PLHVPM.1sbukC7Y.tV/lOLBZ.DWvLiwzTLIZ81vAaaRSYO0/WB6O', 'receptionist', '2025-02-06', 'active');
+-- Insert into patient
+INSERT INTO patient (name, dob, gender, contact, address) VALUES
+('John Doe', '1990-05-14', 'Male', '1234567890', '123 Street, NY'),
+('Jane Smith', '1985-09-22', 'Female', '9876543210', '456 Avenue, CA'),
+('Michael Brown', '1978-11-30', 'Male', '5556667777', '789 Road, TX'),
+('Emily Davis', '1995-04-18', 'Female', '3334445555', '321 Blvd, FL'),
+('David Wilson', '1982-07-25', 'Male', '7778889999', '654 Lane, WA');
 
--- Insert into `his_patient`
-INSERT INTO `his_patient` (`name`, `dob`, `gender`, `contact`, `address`) VALUES
-('John Doe', '1985-07-12', 'Male', '1234567890', '123 Main St'),
-('Jane Smith', '1992-03-25', 'Female', '9876543210', '456 Oak St'),
-('Michael Brown', '1978-11-15', 'Male', '4567891230', '789 Pine St'),
-('Emily Johnson', '2000-05-05', 'Female', '3216549870', '321 Elm St');
+-- Insert into user
+INSERT INTO user (email, password, role, created_at, status) VALUES
+('test1@hospital.com', '$2y$10$3PLHVPM.1sbukC7Y.tV/lOLBZ.DWvLiwzTLIZ81vAaaRSYO0/WB6O', 'Admin', '2025-02-07', 'Active'),
+('test2@hospital.com', '$2y$10$3PLHVPM.1sbukC7Y.tV/lOLBZ.DWvLiwzTLIZ81vAaaRSYO0/WB6O', 'Doctor', '2025-02-07', 'Active'),
+('test3@hospital.com', '$2y$10$3PLHVPM.1sbukC7Y.tV/lOLBZ.DWvLiwzTLIZ81vAaaRSYO0/WB6O', 'Nurse', '2025-02-07', 'Active'),
+('test4@hospital.com', '$2y$10$3PLHVPM.1sbukC7Y.tV/lOLBZ.DWvLiwzTLIZ81vAaaRSYO0/WB6O', 'Receptionist', '2025-02-07', 'Active'),
+('test5@hospital.com', '$2y$10$3PLHVPM.1sbukC7Y.tV/lOLBZ.DWvLiwzTLIZ81vAaaRSYO0/WB6O', 'Patient', '2025-02-07', 'Active');
 
--- Insert into `his_appointment`
-INSERT INTO `his_appointment` (`his_patient_id`, `user_id`, `appointment_date`, `status`) VALUES
-(1, 2, '2025-02-07', 'Scheduled'),
-(2, 2, '2025-02-08', 'Completed'),
-(3, 3, '2025-02-09', 'Scheduled'),
-(4, 3, '2025-02-10', 'Cancelled');
+-- Insert into appointment
+INSERT INTO appointment (appointment_date, status, patient_id, booked_by_id) VALUES
+('2025-02-10', 'Confirmed', 1, 2),
+('2025-02-11', 'Pending', 2, 2),
+('2025-02-12', 'Completed', 3, 3),
+('2025-02-13', 'Cancelled', 4, 3),
+('2025-02-14', 'Confirmed', 5, 4);
 
--- Insert into `his_billing`
-INSERT INTO `his_billing` (`his_patient_id`, `amount`, `status`, `date`) VALUES
-(1, '200', 'Paid', '2025-02-06'),
-(2, '350', 'Unpaid', '2025-02-06'),
-(3, '150', 'Paid', '2025-02-06'),
-(4, '500', 'Pending', '2025-02-06');
+-- Insert into billing
+INSERT INTO billing (amount, status, date, patient_id) VALUES
+('200.50', 'Paid', '2025-02-07', 1),
+('150.00', 'Unpaid', '2025-02-07', 2),
+('300.75', 'Paid', '2025-02-07', 3),
+('120.00', 'Pending', '2025-02-07', 4),
+('500.00', 'Paid', '2025-02-07', 5);
 
--- Insert into `his_message`
-INSERT INTO `his_message` (`sender_id`, `receiver_id`, `message`, `timestamp`) VALUES
-(1, 2, 'Patient John needs an update.', '2025-02-06 10:00:00'),
-(2, 1, 'Scheduled an appointment for John.', '2025-02-06 10:05:00'),
-(3, 4, 'Billing issue for Jane.', '2025-02-06 11:00:00'),
-(4, 3, 'Patient Emily checked in.', '2025-02-06 11:30:00');
+-- Insert into message
+INSERT INTO message (message, timestamp, sender_id, receiver_id) VALUES
+('Hello, how are you?', '2025-02-07 10:00:00', 1, 2),
+('Your appointment is confirmed.', '2025-02-07 11:00:00', 2, 1),
+('Please submit your reports.', '2025-02-07 12:00:00', 3, 4),
+('Reminder: Your bill is due.', '2025-02-07 13:00:00', 4, 5),
+('Thank you for your service.', '2025-02-07 14:00:00', 5, 3);
 
--- Insert into `pacs_image`
-INSERT INTO `pacs_image` (`his_patient_id`, `user_id`, `image_path`, `image_type`, `upload_date`) VALUES
-(1, 2, '/images/patient1_xray.jpg', 'X-ray', '2025-02-06'),
-(2, 3, '/images/patient2_ct.jpg', 'CT Scan', '2025-02-06'),
-(3, 2, '/images/patient3_mri.jpg', 'MRI', '2025-02-06'),
-(4, 3, '/images/patient4_ultrasound.jpg', 'Ultrasound', '2025-02-06');
+-- Insert into test_image
+INSERT INTO test_image (image, image_type, upload_date, patient_id, report_id, uploader_id) VALUES
+('scan1.jpg', 'MRI', '2025-02-07', 1, 1, 2),
+('scan2.jpg', 'X-Ray', '2025-02-07', 2, 2, 3),
+('scan3.jpg', 'CT Scan', '2025-02-07', 3, 3, 4),
+('scan4.jpg', 'Ultrasound', '2025-02-07', 4, 4, 5),
+('scan5.jpg', 'Blood Test', '2025-02-07', 5, 5, 2);
 
--- Insert into `pacs_report`
-INSERT INTO `pacs_report` (`pacs_image_id`, `report_text`, `created_at`) VALUES
-(1, 'Normal X-ray results.', '2025-02-06'),
-(2, 'CT scan shows minor abnormalities.', '2025-02-06'),
-(3, 'MRI indicates no major issues.', '2025-02-06'),
-(4, 'Ultrasound suggests further testing.', '2025-02-06');
+-- Insert into report
+INSERT INTO report (report_text, status, created_at) VALUES
+('MRI scan results show no abnormalities.', 'Reviewed', '2025-02-07', 4, 1),
+('X-Ray reveals minor fracture.', 'Pending', '2025-02-07', 4, 1),
+('CT Scan indicates swelling.', 'Reviewed', '2025-02-07', 4, 2),
+('Ultrasound confirms pregnancy.', 'Reviewed', '2025-02-07' 4, 1),
+('Blood test shows normal sugar levels.', 'Reviewed', '2025-02-07', 4, 1);
 
--- Insert into `ris_schedule`
-INSERT INTO `ris_schedule` (`his_patient_id`, `user_id`, `exam_type`, `scheduled_date`) VALUES
-(1, 2, 'X-ray Chest', '2025-02-07'),
-(2, 3, 'MRI Brain', '2025-02-08'),
-(3, 2, 'CT Abdomen', '2025-02-09'),
-(4, 3, 'Ultrasound Pelvis', '2025-02-10');
+-- Insert into test_schedule
+INSERT INTO test_schedule (exam_type, date, patient_id, booked_by_id) VALUES
+('MRI', '2025-02-08', 1, 2),
+('X-Ray', '2025-02-09', 2, 3),
+('CT Scan', '2025-02-10', 3, 4),
+('Ultrasound', '2025-02-11', 4, 5),
+('Blood Test', '2025-02-12', 5, 2);
 
--- Insert into `ris_report`
-INSERT INTO `ris_report` (`ris_schedule_id`, `report_text`, `status`, `created_at`) VALUES
-(1, 'X-ray report is clear.', 'Completed', '2025-02-07'),
-(2, 'MRI shows no major concerns.', 'Completed', '2025-02-08'),
-(3, 'CT scan needs further evaluation.', 'Pending', '2025-02-09'),
-(4, 'Ultrasound suggests minor issues.', 'Completed', '2025-02-10');
-
--- Insert into `access_log`
-INSERT INTO `access_log` (`user_id`, `action`, `timestamp`) VALUES
-(1, 'Login', '2025-02-06 09:00:00'),
-(2, 'Viewed patient records', '2025-02-06 09:30:00'),
-(3, 'Updated appointment', '2025-02-06 10:00:00'),
-(4, 'Processed billing', '2025-02-06 11:00:00');
--- Insert into `user`
-INSERT INTO `user` (`email`, `password`, `role`, `created_at`, `status`) VALUES
-('admin1@example.com', '$2y$10$3PLHVPM.1sbukC7Y.tV/lOLBZ.DWvLiwzTLIZ81vAaaRSYO0/WB6O', 'admin', '2025-02-06', 'active'),
-('doctor1@example.com', '$2y$10$3PLHVPM.1sbukC7Y.tV/lOLBZ.DWvLiwzTLIZ81vAaaRSYO0/WB6O', 'doctor', '2025-02-06', 'active'),
-('nurse1@example.com', '$2y$10$3PLHVPM.1sbukC7Y.tV/lOLBZ.DWvLiwzTLIZ81vAaaRSYO0/WB6O', 'nurse', '2025-02-06', 'active'),
-('reception@example.com', '$2y$10$3PLHVPM.1sbukC7Y.tV/lOLBZ.DWvLiwzTLIZ81vAaaRSYO0/WB6O', 'receptionist', '2025-02-06', 'active');
-
--- Insert into `his_patient`
-INSERT INTO `his_patient` (`name`, `dob`, `gender`, `contact`, `address`) VALUES
-('John Doe', '1985-07-12', 'Male', '1234567890', '123 Main St'),
-('Jane Smith', '1992-03-25', 'Female', '9876543210', '456 Oak St'),
-('Michael Brown', '1978-11-15', 'Male', '4567891230', '789 Pine St'),
-('Emily Johnson', '2000-05-05', 'Female', '3216549870', '321 Elm St');
-
--- Insert into `his_appointment`
-INSERT INTO `his_appointment` (`his_patient_id`, `user_id`, `appointment_date`, `status`) VALUES
-(1, 2, '2025-02-07', 'Scheduled'),
-(2, 2, '2025-02-08', 'Completed'),
-(3, 3, '2025-02-09', 'Scheduled'),
-(4, 3, '2025-02-10', 'Cancelled');
-
--- Insert into `his_billing`
-INSERT INTO `his_billing` (`his_patient_id`, `amount`, `status`, `date`) VALUES
-(1, '200', 'Paid', '2025-02-06'),
-(2, '350', 'Unpaid', '2025-02-06'),
-(3, '150', 'Paid', '2025-02-06'),
-(4, '500', 'Pending', '2025-02-06');
-
--- Insert into `his_message`
-INSERT INTO `his_message` (`sender_id`, `receiver_id`, `message`, `timestamp`) VALUES
-(1, 2, 'Patient John needs an update.', '2025-02-06 10:00:00'),
-(2, 1, 'Scheduled an appointment for John.', '2025-02-06 10:05:00'),
-(3, 4, 'Billing issue for Jane.', '2025-02-06 11:00:00'),
-(4, 3, 'Patient Emily checked in.', '2025-02-06 11:30:00');
-
--- Insert into `pacs_image`
-INSERT INTO `pacs_image` (`his_patient_id`, `user_id`, `image_path`, `image_type`, `upload_date`) VALUES
-(1, 2, '/images/patient1_xray.jpg', 'X-ray', '2025-02-06'),
-(2, 3, '/images/patient2_ct.jpg', 'CT Scan', '2025-02-06'),
-(3, 2, '/images/patient3_mri.jpg', 'MRI', '2025-02-06'),
-(4, 3, '/images/patient4_ultrasound.jpg', 'Ultrasound', '2025-02-06');
-
--- Insert into `pacs_report`
-INSERT INTO `pacs_report` (`pacs_image_id`, `report_text`, `created_at`) VALUES
-(1, 'Normal X-ray results.', '2025-02-06'),
-(2, 'CT scan shows minor abnormalities.', '2025-02-06'),
-(3, 'MRI indicates no major issues.', '2025-02-06'),
-(4, 'Ultrasound suggests further testing.', '2025-02-06');
-
--- Insert into `ris_schedule`
-INSERT INTO `ris_schedule` (`his_patient_id`, `user_id`, `exam_type`, `scheduled_date`) VALUES
-(1, 2, 'X-ray Chest', '2025-02-07'),
-(2, 3, 'MRI Brain', '2025-02-08'),
-(3, 2, 'CT Abdomen', '2025-02-09'),
-(4, 3, 'Ultrasound Pelvis', '2025-02-10');
-
--- Insert into `ris_report`
-INSERT INTO `ris_report` (`ris_schedule_id`, `report_text`, `status`, `created_at`) VALUES
-(1, 'X-ray report is clear.', 'Completed', '2025-02-07'),
-(2, 'MRI shows no major concerns.', 'Completed', '2025-02-08'),
-(3, 'CT scan needs further evaluation.', 'Pending', '2025-02-09'),
-(4, 'Ultrasound suggests minor issues.', 'Completed', '2025-02-10');
-
--- Insert into `access_log`
-INSERT INTO `access_log` (`user_id`, `action`, `timestamp`) VALUES
-(1, 'Login', '2025-02-06 09:00:00'),
-(2, 'Viewed patient records', '2025-02-06 09:30:00'),
-(3, 'Updated appointment', '2025-02-06 10:00:00'),
-(4, 'Processed billing', '2025-02-06 11:00:00');
+-- Insert into log
+INSERT INTO log (action, timestamp, user_id) VALUES
+('User logged in', '2025-02-07 10:00:00', 1),
+('Appointment booked', '2025-02-07 11:00:00', 2),
+('Bill paid', '2025-02-07 12:00:00', 3),
+('Message sent', '2025-02-07 13:00:00', 4),
+('Report uploaded', '2025-02-07 14:00:00', 5);

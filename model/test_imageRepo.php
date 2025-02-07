@@ -2,16 +2,16 @@
 
 require_once __DIR__ . '/../model/db_connect.php';
 
+require __DIR__ . '/../routes.php';
 global $routes;
-require '../routes.php';
 
 $database_error_page = $routes["database_error"];
 
 
-function findAllPacs_images()
+function findAllTestImages()
 {
     $conn = db_conn();
-    $selectQuery = 'SELECT * FROM `pacs_image`';
+    $selectQuery = 'SELECT * FROM `test_image`';
 
     try {
         $result = $conn->query($selectQuery);
@@ -19,7 +19,7 @@ function findAllPacs_images()
         // Check if the query was successful
         if (!$result) {
 //            throw new Exception("Query failed: " . $conn->error);
-            $_SESSION['error_location'] = "Database -> pacs_imageRepo -> findAllPacs_images()";
+            $_SESSION['error_location'] = "Database -> test_imageRepo -> findAllTestImages()";
             $_SESSION['database_error'] = "Query failed: " . $conn->error;
             global $routes;
             $database_error_page = $routes["database_error"];
@@ -35,9 +35,9 @@ function findAllPacs_images()
 
         // Check for an empty result set
         if (empty($rows)) {
-//            throw new Exception("No rows found in the 'user' table.");
-            $_SESSION['error_location'] = "Database -> pacs_imageRepo -> findAllPacs_images()";
-            $_SESSION['database_error'] = "No rows found in the 'pacs_image' table.";
+//            throw new Exception("No rows found in the 'test_image' table.");
+            $_SESSION['error_location'] = "Database -> test_imageRepo -> findAllTestImages()";
+            $_SESSION['database_error'] = "No rows found in the 'test_image' table.";
             global $routes;
             $database_error_page = $routes["database_error"];
             header("Location: {$database_error_page}");
@@ -45,7 +45,12 @@ function findAllPacs_images()
 
         return $rows;
     } catch (Exception $e) {
-        echo "Error: " . $e->getMessage();
+//        echo "Error: " . $e->getMessage();
+        $_SESSION['error_location'] = "Database -> test_imageRepo -> findAllTestImages()";
+        $_SESSION['database_error'] = $e->getMessage();
+        global $routes;
+        $database_error_page = $routes["database_error"];
+        header("Location: {$database_error_page}");
         return null;
     } finally {
         // Close the database connection
@@ -54,10 +59,10 @@ function findAllPacs_images()
 }
 
 
-function findPacs_imageByID($id)
+function findTestImageByID($id)
 {
     $conn = db_conn();
-    $selectQuery = 'SELECT * FROM `pacs_image` WHERE `id` = ?';
+    $selectQuery = 'SELECT * FROM `test_image` WHERE `id` = ?';
 
     try {
         $stmt = $conn->prepare($selectQuery);
@@ -65,7 +70,7 @@ function findPacs_imageByID($id)
         // Check if the prepare statement was successful
         if (!$stmt) {
 //            throw new Exception("Prepare statement failed: " . $conn->error);
-            $_SESSION['error_location'] = "Database -> pacs_imageRepo -> findPacs_imageByID($id)";
+            $_SESSION['error_location'] = "Database -> test_imageRepo -> findTestImageByID($id)";
             $_SESSION['database_error'] = "Prepare statement failed: " . $conn->error;
             global $routes;
             $database_error_page = $routes["database_error"];
@@ -87,7 +92,7 @@ function findPacs_imageByID($id)
         // Check for an empty result set
         if (!$user) {
 //            throw new Exception("No user found with ID: " . $id);
-            $_SESSION['error_location'] = "Database -> pacs_imageRepo -> findPacs_imageByID($id)";
+            $_SESSION['error_location'] = "Database -> test_imageRepo -> findTestImageByID($id)";
             $_SESSION['database_error'] = "No data found with ID: " . $id;
             global $routes;
             $database_error_page = $routes["database_error"];
@@ -100,7 +105,7 @@ function findPacs_imageByID($id)
         return $user;
     } catch (Exception $e) {
 //        echo "Error: " . $e->getMessage();
-        $_SESSION['error_location'] = "Database -> pacs_imageRepo -> findPacs_imageByID($id)";
+        $_SESSION['error_location'] = "Database -> test_imageRepo -> findTestImageByID($id)";
         $_SESSION['database_error'] = $e->getMessage();
         global $routes;
         $database_error_page = $routes["database_error"];
@@ -112,10 +117,10 @@ function findPacs_imageByID($id)
     }
 }
 
-function findAllPacs_imagesByPatientID($his_patient_id)
+function findAllTestImagesByPatientID($patient_id)
 {
     $conn = db_conn();
-    $selectQuery = 'SELECT * FROM `pacs_image` WHERE `his_patient_id` = '.$his_patient_id;
+    $selectQuery = 'SELECT * FROM `test_image` WHERE `patient_id` = '.$patient_id;
 
     try {
         $result = $conn->query($selectQuery);
@@ -123,7 +128,7 @@ function findAllPacs_imagesByPatientID($his_patient_id)
         // Check if the query was successful
         if (!$result) {
 //            throw new Exception("Query failed: " . $conn->error);
-            $_SESSION['error_location'] = "Database -> pacs_imageRepo -> findAllPacs_imageByPatientID()";
+            $_SESSION['error_location'] = "Database -> test_imageRepo -> findAllTestImagesByPatientID()";
             $_SESSION['database_error'] = "Query failed: " . $conn->error;
             global $routes;
             $database_error_page = $routes["database_error"];
@@ -140,7 +145,7 @@ function findAllPacs_imagesByPatientID($his_patient_id)
         // Check for an empty result set
         if (empty($rows)) {
 //            throw new Exception("No rows found in the 'appointment' table for that his_patient_id.");
-            $_SESSION['error_location'] = "Database -> pacs_imageRepo -> findAllPacs_imageByPatientID()";
+            $_SESSION['error_location'] = "Database -> test_imageRepo -> findAllTestImagesByPatientID()";
             $_SESSION['database_error'] = "No rows found in the 'pacs_image' table for that his_patient_id.";
             global $routes;
             $database_error_page = $routes["database_error"];
@@ -150,7 +155,7 @@ function findAllPacs_imagesByPatientID($his_patient_id)
         return $rows;
     } catch (Exception $e) {
 //        echo "Error: " . $e->getMessage();
-        $_SESSION['error_location'] = "Database -> pacs_imageRepo -> findAllPacs_imageByPatientID()";
+        $_SESSION['error_location'] = "Database -> test_imageRepo -> findAllTestImagesByPatientID()";
         $_SESSION['database_error'] = $e->getMessage();
         global $routes;
         $database_error_page = $routes["database_error"];
@@ -162,10 +167,10 @@ function findAllPacs_imagesByPatientID($his_patient_id)
     }
 }
 
-function findAllPacs_imagesByUserID($user_id)
+function findAllTestImagesByReportID($report_id)
 {
     $conn = db_conn();
-    $selectQuery = 'SELECT * FROM `pacs_image` WHERE `user_id` = '.$user_id;
+    $selectQuery = 'SELECT * FROM `test_image` WHERE `report_id` = '.$report_id;
 
     try {
         $result = $conn->query($selectQuery);
@@ -173,7 +178,7 @@ function findAllPacs_imagesByUserID($user_id)
         // Check if the query was successful
         if (!$result) {
 //            throw new Exception("Query failed: " . $conn->error);
-            $_SESSION['error_location'] = "Database -> pacs_imageRepo -> findAllPacs_imageByUserID()";
+            $_SESSION['error_location'] = "Database -> test_imageRepo -> findAllTestImagesByReportID()";
             $_SESSION['database_error'] = "Query failed: " . $conn->error;
             global $routes;
             $database_error_page = $routes["database_error"];
@@ -189,9 +194,9 @@ function findAllPacs_imagesByUserID($user_id)
 
         // Check for an empty result set
         if (empty($rows)) {
-//            throw new Exception("No rows found in the 'appointment' table for that his_patient_id.");
-            $_SESSION['error_location'] = "Database -> pacs_imageRepo -> findAllPacs_imageByUserID()";
-            $_SESSION['database_error'] = "No rows found in the 'pacs_image' table for that user_id who submitted the data.";
+//            throw new Exception("No rows found in the 'test_image' table for that id.");
+            $_SESSION['error_location'] = "Database -> test_imageRepo -> findAllTestImagesByReportID()";
+            $_SESSION['database_error'] = "No rows found in the 'test_image' table for that report_id that is connected with the images.";
             global $routes;
             $database_error_page = $routes["database_error"];
             header("Location: {$database_error_page}");
@@ -200,7 +205,7 @@ function findAllPacs_imagesByUserID($user_id)
         return $rows;
     } catch (Exception $e) {
 //        echo "Error: " . $e->getMessage();
-        $_SESSION['error_location'] = "Database -> pacs_imageRepo -> findAllPacs_imageByPatientID()";
+        $_SESSION['error_location'] = "Database -> test_imageRepo -> findAllTestImagesByReportID()";
         $_SESSION['database_error'] = $e->getMessage();
         global $routes;
         $database_error_page = $routes["database_error"];
@@ -213,13 +218,13 @@ function findAllPacs_imagesByUserID($user_id)
 }
 
 
-function updatePacs_image($image_path, $image_type, $upload_date, $id)
+function updateTestImage($image, $image_type, $upload_date, $id)
 {
     $conn = db_conn();
 
     // Construct the SQL query
-    $updateQuery = "UPDATE `pacs_image` SET 
-                    image_path =?,
+    $updateQuery = "UPDATE `test_image` SET 
+                    image =?,
                     image_type =?,
                     upload_date =?
                     WHERE id = ?";
@@ -231,7 +236,7 @@ function updatePacs_image($image_path, $image_type, $upload_date, $id)
         // Check if the prepare statement was successful
         if (!$stmt) {
 //            throw new Exception("Prepare statement failed: " . $conn->error);
-            $_SESSION['error_location'] = "Database -> pacs_imageRepo -> updatePacs_image()";
+            $_SESSION['error_location'] = "Database -> test_imageRepo -> updateTestImage()";
             $_SESSION['database_error'] = "Prepare statement failed: " . $conn->error;
             global $routes;
             $database_error_page = $routes["database_error"];
@@ -239,7 +244,7 @@ function updatePacs_image($image_path, $image_type, $upload_date, $id)
         }
 
         // Bind parameters
-        $stmt->bind_param('sssi', $image_path, $image_type, $upload_date, $id);
+        $stmt->bind_param('sssi', $image, $image_type, $upload_date, $id);
 
         // Execute the query
         $stmt->execute();
@@ -249,7 +254,7 @@ function updatePacs_image($image_path, $image_type, $upload_date, $id)
     } catch (Exception $e) {
         // Handle the exception, you might want to log it or return false
 //        echo "Error: " . $e->getMessage();
-        $_SESSION['error_location'] = "Database -> pacs_imageRepo -> updatePacs_image()";
+        $_SESSION['error_location'] = "Database -> test_imageRepo -> updateTestImage()";
         $_SESSION['database_error'] = $e->getMessage();
         global $routes;
         $database_error_page = $routes["database_error"];
@@ -265,14 +270,11 @@ function updatePacs_image($image_path, $image_type, $upload_date, $id)
 }
 
 
-function updatePacs_imageStatus($status, $date, $id)
-{
+function deleteTestImage($id) {
     $conn = db_conn();
 
     // Construct the SQL query
-    $updateQuery = "UPDATE `pacs_image` SET 
-                    status =?,
-                    date =?
+    $updateQuery = "DELETE FROM `test_image`
                     WHERE id = ?";
 
     try {
@@ -282,55 +284,7 @@ function updatePacs_imageStatus($status, $date, $id)
         // Check if the prepare statement was successful
         if (!$stmt) {
 //            throw new Exception("Prepare statement failed: " . $conn->error);
-            $_SESSION['error_location'] = "Database -> pacs_imageRepo -> updatePacs_imageStatus()";
-            $_SESSION['database_error'] = "Prepare statement failed: " . $conn->error;
-            global $routes;
-            $database_error_page = $routes["database_error"];
-            header("Location: {$database_error_page}");
-        }
-
-        // Bind parameters
-        $stmt->bind_param('ssi', $status, $date, $id);
-
-        // Execute the query
-        $stmt->execute();
-
-        // Return true if the update is successful
-        return true;
-    } catch (Exception $e) {
-        // Handle the exception, you might want to log it or return false
-//        echo "Error: " . $e->getMessage();
-        $_SESSION['error_location'] = "Database -> pacs_imageRepo -> updatePacs_imageStatus()";
-        $_SESSION['database_error'] = $e->getMessage();
-        global $routes;
-        $database_error_page = $routes["database_error"];
-        header("Location: {$database_error_page}");
-        return false;
-    } finally {
-        // Close the statement
-        $stmt->close();
-
-        // Close the database connection
-        $conn->close();
-    }
-}
-
-
-function deletePacs_image($id) {
-    $conn = db_conn();
-
-    // Construct the SQL query
-    $updateQuery = "DELETE FROM `pacs_image`
-                    WHERE id = ?";
-
-    try {
-        // Prepare the statement
-        $stmt = $conn->prepare($updateQuery);
-
-        // Check if the prepare statement was successful
-        if (!$stmt) {
-//            throw new Exception("Prepare statement failed: " . $conn->error);
-            $_SESSION['error_location'] = "Database -> pacs_imageRepo -> deletePacs_image()";
+            $_SESSION['error_location'] = "Database -> test_imageRepo -> deleteTestImage()";
             $_SESSION['database_error'] = "Prepare statement failed: " . $conn->error;
             global $routes;
             $database_error_page = $routes["database_error"];
@@ -348,7 +302,7 @@ function deletePacs_image($id) {
     } catch (Exception $e) {
         // Handle the exception, you might want to log it or return false
 //        echo "Error: " . $e->getMessage();
-        $_SESSION['error_location'] = "Database -> pacs_imageRepo -> deletePacs_image()";
+        $_SESSION['error_location'] = "Database -> test_imageRepo -> deleteTestImage()";
         $_SESSION['database_error'] = $e->getMessage();
         global $routes;
         $database_error_page = $routes["database_error"];
@@ -364,18 +318,18 @@ function deletePacs_image($id) {
 }
 
 
-function createPacs_image($his_patient_id, $user_id, $image_path, $image_type, $upload_date) {
+function createTestImage($image, $image_type, $upload_date, $patient_id, $report_id, $uploader_id) {
     $conn = db_conn();
 
     // Construct the SQL query
-    $insertQuery = "INSERT INTO `pacs_image` (his_patient_id, user_id, image_path, image_type, upload_date) VALUES (?, ?, ?, ?, ?)";
+    $insertQuery = "INSERT INTO `test_image` (image, image_type, upload_date, patient_id, report_id, uploader_id) VALUES (?, ?, ?, ?, ?, ?)";
 
     try {
         // Prepare the statement
         $stmt = $conn->prepare($insertQuery);
 
         // Bind parameters
-        $stmt->bind_param('iisss', $his_patient_id, $user_id, $image_path, $image_type, $upload_date);
+        $stmt->bind_param('sssiii', $image, $image_type, $upload_date, $patient_id, $report_id, $uploader_id);
 
         // Execute the query
         $stmt->execute();
@@ -390,7 +344,7 @@ function createPacs_image($his_patient_id, $user_id, $image_path, $image_type, $
     } catch (Exception $e) {
         // Handle the exception, you might want to log it or return false
 //        echo "Error: " . $e->getMessage();
-        $_SESSION['error_location'] = "Database ->  pacs_imageRepo -> createPacs_image()";
+        $_SESSION['error_location'] = "Database ->  test_imageRepo -> createTestImage()";
         $_SESSION['database_error'] = $e->getMessage();
         global $routes;
         $database_error_page = $routes["database_error"];

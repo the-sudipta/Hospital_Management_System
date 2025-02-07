@@ -2,16 +2,17 @@
 
 require_once __DIR__ . '/../model/db_connect.php';
 
+require __DIR__ . '/../routes.php';
 global $routes;
-require '../routes.php';
+
 
 $database_error_page = $routes["database_error"];
 
 
-function findAllPacs_reports()
+function findAllReports()
 {
     $conn = db_conn();
-    $selectQuery = 'SELECT * FROM `pacs_report`';
+    $selectQuery = 'SELECT * FROM `report`';
 
     try {
         $result = $conn->query($selectQuery);
@@ -19,7 +20,7 @@ function findAllPacs_reports()
         // Check if the query was successful
         if (!$result) {
 //            throw new Exception("Query failed: " . $conn->error);
-            $_SESSION['error_location'] = "Database -> pacs_reportRepo -> findAllPacs_reports()";
+            $_SESSION['error_location'] = "Database -> reportRepo -> findAllReports()";
             $_SESSION['database_error'] = "Query failed: " . $conn->error;
             global $routes;
             $database_error_page = $routes["database_error"];
@@ -36,8 +37,8 @@ function findAllPacs_reports()
         // Check for an empty result set
         if (empty($rows)) {
 //            throw new Exception("No rows found in the 'user' table.");
-            $_SESSION['error_location'] = "Database -> pacs_reportRepo -> findAllPacs_reports()";
-            $_SESSION['database_error'] = "No rows found in the 'pacs_report' table.";
+            $_SESSION['error_location'] = "Database -> reportRepo -> findAllReports()";
+            $_SESSION['database_error'] = "No rows found in the 'report' table.";
             global $routes;
             $database_error_page = $routes["database_error"];
             header("Location: {$database_error_page}");
@@ -45,7 +46,12 @@ function findAllPacs_reports()
 
         return $rows;
     } catch (Exception $e) {
-        echo "Error: " . $e->getMessage();
+//        echo "Error: " . $e->getMessage();
+        $_SESSION['error_location'] = "Database -> reportRepo -> findAllReports()";
+        $_SESSION['database_error'] = $e->getMessage();
+        global $routes;
+        $database_error_page = $routes["database_error"];
+        header("Location: {$database_error_page}");
         return null;
     } finally {
         // Close the database connection
@@ -54,10 +60,10 @@ function findAllPacs_reports()
 }
 
 
-function findPacs_reportByID($id)
+function findReportByID($id)
 {
     $conn = db_conn();
-    $selectQuery = 'SELECT * FROM `pacs_report` WHERE `id` = ?';
+    $selectQuery = 'SELECT * FROM `report` WHERE `id` = ?';
 
     try {
         $stmt = $conn->prepare($selectQuery);
@@ -65,7 +71,7 @@ function findPacs_reportByID($id)
         // Check if the prepare statement was successful
         if (!$stmt) {
 //            throw new Exception("Prepare statement failed: " . $conn->error);
-            $_SESSION['error_location'] = "Database -> pacs_reportRepo -> findPacs_reportByID($id)";
+            $_SESSION['error_location'] = "Database -> reportRepo -> findReportByID($id)";
             $_SESSION['database_error'] = "Prepare statement failed: " . $conn->error;
             global $routes;
             $database_error_page = $routes["database_error"];
@@ -87,7 +93,7 @@ function findPacs_reportByID($id)
         // Check for an empty result set
         if (!$user) {
 //            throw new Exception("No user found with ID: " . $id);
-            $_SESSION['error_location'] = "Database -> pacs_reportRepo -> findPacs_reportByID($id)";
+            $_SESSION['error_location'] = "Database -> reportRepo -> findReportByID($id)";
             $_SESSION['database_error'] = "No data found with ID: " . $id;
             global $routes;
             $database_error_page = $routes["database_error"];
@@ -100,7 +106,7 @@ function findPacs_reportByID($id)
         return $user;
     } catch (Exception $e) {
 //        echo "Error: " . $e->getMessage();
-        $_SESSION['error_location'] = "Database -> pacs_reportRepo -> findPacs_reportByID($id)";
+        $_SESSION['error_location'] = "Database -> reportRepo -> findReportByID($id)";
         $_SESSION['database_error'] = $e->getMessage();
         global $routes;
         $database_error_page = $routes["database_error"];
@@ -112,10 +118,10 @@ function findPacs_reportByID($id)
     }
 }
 
-function findAllPacs_reportsByPacs_imageID($pacs_imageID)
+function findAllReportsByPatientID($patient_id)
 {
     $conn = db_conn();
-    $selectQuery = 'SELECT * FROM `pacs_report` WHERE `pacs_image_id` = '.$pacs_imageID;
+    $selectQuery = 'SELECT * FROM `report` WHERE `patient_id` = '.$patient_id;
 
     try {
         $result = $conn->query($selectQuery);
@@ -123,7 +129,7 @@ function findAllPacs_reportsByPacs_imageID($pacs_imageID)
         // Check if the query was successful
         if (!$result) {
 //            throw new Exception("Query failed: " . $conn->error);
-            $_SESSION['error_location'] = "Database -> pacs_reportRepo -> findAllPacs_reportByPatientID()";
+            $_SESSION['error_location'] = "Database -> reportRepo -> findAllReportsByPatientID()";
             $_SESSION['database_error'] = "Query failed: " . $conn->error;
             global $routes;
             $database_error_page = $routes["database_error"];
@@ -140,7 +146,7 @@ function findAllPacs_reportsByPacs_imageID($pacs_imageID)
         // Check for an empty result set
         if (empty($rows)) {
 //            throw new Exception("No rows found in the 'appointment' table for that his_patient_id.");
-            $_SESSION['error_location'] = "Database -> pacs_reportRepo -> findAllPacs_reportByPatientID()";
+            $_SESSION['error_location'] = "Database -> reportRepo -> findAllReportsByPatientID()";
             $_SESSION['database_error'] = "No rows found in the 'pacs_report' table for that his_patient_id.";
             global $routes;
             $database_error_page = $routes["database_error"];
@@ -150,7 +156,7 @@ function findAllPacs_reportsByPacs_imageID($pacs_imageID)
         return $rows;
     } catch (Exception $e) {
 //        echo "Error: " . $e->getMessage();
-        $_SESSION['error_location'] = "Database -> pacs_reportRepo -> findAllPacs_reportByPatientID()";
+        $_SESSION['error_location'] = "Database -> reportRepo -> findAllReportsByPatientID()";
         $_SESSION['database_error'] = $e->getMessage();
         global $routes;
         $database_error_page = $routes["database_error"];
@@ -163,12 +169,12 @@ function findAllPacs_reportsByPacs_imageID($pacs_imageID)
 }
 
 
-function updatePacs_reportText($report_text, $id)
+function updateReportText($report_text, $id)
 {
     $conn = db_conn();
 
     // Construct the SQL query
-    $updateQuery = "UPDATE `pacs_report` SET 
+    $updateQuery = "UPDATE `report` SET 
                     report_text =?
                     WHERE id = ?";
 
@@ -179,7 +185,7 @@ function updatePacs_reportText($report_text, $id)
         // Check if the prepare statement was successful
         if (!$stmt) {
 //            throw new Exception("Prepare statement failed: " . $conn->error);
-            $_SESSION['error_location'] = "Database -> pacs_reportRepo -> updatePacs_report()";
+            $_SESSION['error_location'] = "Database -> reportRepo -> updateReportText()";
             $_SESSION['database_error'] = "Prepare statement failed: " . $conn->error;
             global $routes;
             $database_error_page = $routes["database_error"];
@@ -197,7 +203,7 @@ function updatePacs_reportText($report_text, $id)
     } catch (Exception $e) {
         // Handle the exception, you might want to log it or return false
 //        echo "Error: " . $e->getMessage();
-        $_SESSION['error_location'] = "Database -> pacs_reportRepo -> updatePacs_report()";
+        $_SESSION['error_location'] = "Database -> reportRepo -> updateReportText()";
         $_SESSION['database_error'] = $e->getMessage();
         global $routes;
         $database_error_page = $routes["database_error"];
@@ -213,11 +219,11 @@ function updatePacs_reportText($report_text, $id)
 }
 
 
-function deletePacs_report($id) {
+function deleteReport($id) {
     $conn = db_conn();
 
     // Construct the SQL query
-    $updateQuery = "DELETE FROM `pacs_report`
+    $updateQuery = "DELETE FROM `report`
                     WHERE id = ?";
 
     try {
@@ -227,7 +233,7 @@ function deletePacs_report($id) {
         // Check if the prepare statement was successful
         if (!$stmt) {
 //            throw new Exception("Prepare statement failed: " . $conn->error);
-            $_SESSION['error_location'] = "Database -> pacs_reportRepo -> deletePacs_report()";
+            $_SESSION['error_location'] = "Database -> reportRepo -> deleteReport()";
             $_SESSION['database_error'] = "Prepare statement failed: " . $conn->error;
             global $routes;
             $database_error_page = $routes["database_error"];
@@ -245,7 +251,7 @@ function deletePacs_report($id) {
     } catch (Exception $e) {
         // Handle the exception, you might want to log it or return false
 //        echo "Error: " . $e->getMessage();
-        $_SESSION['error_location'] = "Database -> pacs_reportRepo -> deletePacs_report()";
+        $_SESSION['error_location'] = "Database -> reportRepo -> deleteReport()";
         $_SESSION['database_error'] = $e->getMessage();
         global $routes;
         $database_error_page = $routes["database_error"];
@@ -261,18 +267,18 @@ function deletePacs_report($id) {
 }
 
 
-function createPacs_report($pacs_image_id, $report_text, $created_at) {
+function createReport($report_text, $status, $created_at, $patient_id, $uploader_id) {
     $conn = db_conn();
 
     // Construct the SQL query
-    $insertQuery = "INSERT INTO `pacs_image` (pacs_image_id, report_text, created_at) VALUES (?, ?, ?)";
+    $insertQuery = "INSERT INTO `report` (report_text, status, created_at, patient_id, uploader_id) VALUES (?, ?, ?, ?, ?)";
 
     try {
         // Prepare the statement
         $stmt = $conn->prepare($insertQuery);
 
         // Bind parameters
-        $stmt->bind_param('iss', $pacs_image_id, $report_text, $created_at);
+        $stmt->bind_param('sssii', $report_text, $status, $created_at, $patient_id, $uploader_id);
 
         // Execute the query
         $stmt->execute();
@@ -287,7 +293,7 @@ function createPacs_report($pacs_image_id, $report_text, $created_at) {
     } catch (Exception $e) {
         // Handle the exception, you might want to log it or return false
 //        echo "Error: " . $e->getMessage();
-        $_SESSION['error_location'] = "Database ->  pacs_reportRepo -> createPacs_report()";
+        $_SESSION['error_location'] = "Database ->  reportRepo -> createReport()";
         $_SESSION['database_error'] = $e->getMessage();
         global $routes;
         $database_error_page = $routes["database_error"];
