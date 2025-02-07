@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PACS RIS HIS Access Control Project</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; padding: 20px; background-color: #f4f4f4; }
+        h1, h2, h3 { color: #333; }
+        .container { max-width: 900px; margin: auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0px 0px 10px #aaa; }
+        table { width: 100%; border-collapse: collapse; margin: 20px 0; }
+        th, td { border: 1px solid #ddd; padding: 10px; text-align: left; }
+        th { background-color: #007bff; color: white; cursor: pointer; }
+        tr:nth-child(even) { background-color: #f2f2f2; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>Hospital Management System</h1>
+    <h2>Project Overview</h2>
+    <p>This project aims to create a secure access control system for PACS, RIS, and HIS using HTML, CSS, JavaScript, and PHP.</p>
+
+    <h2>Users & Roles</h2>
+    <ul>
+        <li><strong>Administrator:</strong> Full access to all systems (PACS, RIS, HIS).</li>
+        <li><strong>PACS Users:</strong> Access imaging data, store/manage medical images, and retrieve relevant patient records.</li>
+        <li><strong>RIS Users:</strong> Manage radiology workflows, scheduling, and radiology reports.</li>
+        <li><strong>HIS Users:</strong> Manage patient records, billing, hospital administration, and scheduling.</li>
+    </ul>
+
+    <h2>System Features & Access Control</h2>
+    <h3>PACS (Picture Archiving and Communication System)</h3>
+    <ul>
+        <li>Stores and manages medical imaging data (X-rays, MRIs, CT scans, etc.).</li>
+        <li>Can access RIS data for relevant patient records and radiology reports.</li>
+        <li>Cannot access HIS except for imaging-related details.</li>
+    </ul>
+
+    <h3>RIS (Radiology Information System)</h3>
+    <ul>
+        <li>Manages radiology workflows (scheduling, reporting, tracking radiology requests).</li>
+        <li>Can only access PACS for imaging-related data.</li>
+        <li>Restricted from accessing HIS.</li>
+    </ul>
+
+    <h3>HIS (Hospital Information System)</h3>
+    <ul>
+        <li>Manages patient records, billing, scheduling, and overall hospital operations.</li>
+        <li>Has full access to all systems (PACS, RIS, and general hospital data).</li>
+    </ul>
+
+    <h2>File Structure</h2>
+    <pre>
+        |-- 📁 model
+        |   |-- 📄 pacs_reportRepo.php
+        |   |-- 📄 pacs_imageRepo.php
+        |   |-- 📄 his_patientRepo.php
+        |   |-- 📄 userRepo.php
+        |   |-- 📄 ris_scheduleRepo.php
+        |   |-- 📄 ris_reportRepo.php
+        |   |-- 📄 db_connect.php
+        |   |-- 📄 CalculationRepo.php
+        |   |-- 📄 access_logRepo.php
+        |   |-- 📄 his_messageRepo.php
+        |   |-- 📄 his_billingRepo.php
+        |   |-- 📄 his_appointmentRepo.php
+        |-- 📁 view
+        |   |-- 📁 pacs
+        |   |   |-- 📁 storage
+        |   |-- 📁 js
+        |   |   |-- 📁 database_error
+        |   |-- 📁 static
+        |   |   |-- 📁 image
+        |   |-- 📁 ris
+        |   |-- 📁 css
+        |   |   |-- 📁 database_error
+        |   |-- 📁 admin
+        |   |-- 📁 his
+        |   |-- 📁 error
+        |   |   |-- 📄 database_error.php
+        |   |-- 📄 Login.php
+        |   |-- 📄 Loader.php
+        |   |-- 📄 Data_Provider.php
+        |   |-- 📄 php.xml
+        |   |-- 📄 modules.xml
+        |   |-- 📄 workspace.xml
+        |   |-- 📄 vcs.xml
+        |   |-- 📄 dataSources.local.xml
+        |   |-- 📄 .gitignore
+        |   |-- 📄 Hospital_Management_System.iml
+        |   |-- 📄 dataSources.xml
+        |-- 📁 controller
+        |   |-- 📁 pacs
+        |   |-- 📁 ris
+        |   |-- 📁 admin
+        |   |-- 📁 his
+        |   |-- 📄 TestController.php
+        |   |-- 📄 LogoutController.php
+        |   |-- 📄 LoginController.php
+        |-- 📄 routes.php
+        |-- 📄 index.php
+    </pre>
+
+    <h2>Database Schema</h2>
+    <table id="dbTable">
+        <thead>
+        <tr>
+            <th onclick="sortTable(0)">Table Name</th>
+            <th onclick="sortTable(1)">Attributes</th>
+            <th onclick="sortTable(2)">Relationships</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr><td>users</td><td>id, name, email, password, role, created_at</td><td>-</td></tr>
+        <tr><td>pacs_images</td><td>id, patient_id, radiologist_id, image_path, image_type, upload_date</td><td>patient_id → his_patients(id), radiologist_id → users(id)</td></tr>
+        <tr><td>pacs_reports</td><td>id, image_id, report_text, created_at</td><td>image_id → pacs_images(id)</td></tr>
+        <tr><td>ris_schedules</td><td>id, patient_id, radiologist_id, exam_type, scheduled_date</td><td>patient_id → his_patients(id), radiologist_id → users(id)</td></tr>
+        <tr><td>ris_reports</td><td>id, schedule_id, report_text, status, created_at</td><td>schedule_id → ris_schedules(id)</td></tr>
+        <tr><td>his_patients</td><td>id, name, dob, gender, contact, address</td><td>-</td></tr>
+        <tr><td>his_appointments</td><td>id, patient_id, doctor_id, appointment_date, status</td><td>patient_id → his_patients(id), doctor_id → users(id)</td></tr>
+        <tr><td>his_billing</td><td>id, patient_id, amount, status, date</td><td>patient_id → his_patients(id)</td></tr>
+        <tr><td>his_messages</td><td>id, sender_id, receiver_id, message, timestamp</td><td>sender_id & receiver_id → users(id)</td></tr>
+        <tr><td>access_logs</td><td>id, user_id, action, timestamp</td><td>user_id → users(id)</td></tr>
+        </tbody>
+    </table>
+</div>
+
+<script>
+    function sortTable(n) {
+        let table = document.getElementById("dbTable");
+        let rows = Array.from(table.rows).slice(1);
+        let sorted = rows.sort((a, b) => a.cells[n].innerText.localeCompare(b.cells[n].innerText));
+        rows.forEach(row => table.appendChild(row));
+    }
+</script>
+</body>
+</html>
