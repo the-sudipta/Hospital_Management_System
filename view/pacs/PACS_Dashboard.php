@@ -205,7 +205,7 @@ $user_id = $_SESSION["user_id"];
             <li onclick="showContent('schedule', this)">Manage Schedule</li>
             <li onclick="showContent('access-log', this)">Access Logs</li>
         </ul>
-        <button class="logout-btn"><a href="<?php echo $logout_controller; ?>"></a>Logout</button>
+        <button class="logout-btn" onclick="logout()">Logout</button>
     </div>
 
     <div class="content">
@@ -234,7 +234,7 @@ $user_id = $_SESSION["user_id"];
                 <div class="fun-section">
                     <div class="fun-box">💡 Quick Tip: Always verify report accuracy!</div>
                     <div class="fun-box">📌 Fun Fact: The first MRI scan was in 1977.</div>
-                    <div class="fun-box">⏳ Current Server Load: 78%</div>
+                    <div class="fun-box">⏳ Current Server Load: %</div>
                     <div class="fun-box">🚀 Daily Scans Processed: 580</div>
                 </div>
             </div>
@@ -271,6 +271,9 @@ $user_id = $_SESSION["user_id"];
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <script>
+
+    var SERVER_LOAD = 0; // Global server load variable
+
     document.addEventListener("DOMContentLoaded", function () {
         const ctx = document.createElement("canvas");
         document.getElementById("lineChart").appendChild(ctx);
@@ -298,7 +301,7 @@ $user_id = $_SESSION["user_id"];
                     y: {
                         title: { display: true, text: "CPU Load (%)" },
                         min: 0,
-                        max: 100
+                        max: 140
                     }
                 }
             }
@@ -306,24 +309,21 @@ $user_id = $_SESSION["user_id"];
 
         function getApproximateCPULoad() {
             const start = performance.now();
+            let workloadFactor = (performance.now() % 200) + 50;
+            let iterations = 1e6 + workloadFactor * 20000;
 
-            // Simulated CPU work
-            for (let i = 0; i < 1e7; i++) {}
+            for (let i = 0; i < iterations; i++) {
+                Math.sqrt(i * workloadFactor) + Math.log(i + 1);
+            }
 
             const end = performance.now();
-            let cpuLoad = Math.min(100, Math.max(10, (end - start) / 10));
+            let cpuLoad = Math.min(100, Math.max(10, ((end - start) * workloadFactor) / 5));
 
             return cpuLoad.toFixed(2);
         }
 
         function fetchServerLoad() {
-            let cpuUsage = getApproximateCPULoad();
-
-            // Update text in .fun-box
-            const serverLoadBox = document.querySelector(".fun-box");
-            if (serverLoadBox) {
-                serverLoadBox.innerHTML = `⏳ Current Server Load: ${cpuUsage}%`;
-            }
+            SERVER_LOAD = getApproximateCPULoad(); // Update global server load
 
             // Update Chart
             if (serverLoadChart.data.labels.length >= 10) {
@@ -332,33 +332,25 @@ $user_id = $_SESSION["user_id"];
             }
 
             serverLoadChart.data.labels.push(new Date().toLocaleTimeString());
-            serverLoadChart.data.datasets[0].data.push(cpuUsage);
+            serverLoadChart.data.datasets[0].data.push(SERVER_LOAD);
             serverLoadChart.update();
+
+            updateServerLoadText(); // Update text along with the graph
         }
 
-        setInterval(fetchServerLoad, 1000); // Update every second
+        setInterval(fetchServerLoad, 5000); // Sync both updates every 5 seconds
+
     });
 
-    function updateServerLoad() {
-        const serverLoadBox = document.querySelector(".fun-box:nth-child(3)"); // Select the third fun-box
+    function updateServerLoadText() {
+        const serverLoadBox = document.querySelector(".fun-box:nth-child(3)");
         if (!serverLoadBox) return;
 
-        function fetchServerLoad() {
-            let cpuUsage = Math.floor(Math.random() * (90 - 10) + 10); // Simulated CPU load between 10% and 90%
-
-            serverLoadBox.innerHTML = `⏳ Current Server Load: ${cpuUsage}%`;
-        }
-
-        fetchServerLoad(); // Initial call
-        setInterval(fetchServerLoad, 3000); // Update every 3 seconds
+        serverLoadBox.innerHTML = `⏳ Current Server Load: ${SERVER_LOAD}%`;
     }
-
-    // Call the function after DOM is loaded
-    document.addEventListener("DOMContentLoaded", updateServerLoad);
-
 
 </script>
 
-
 </body>
 </html>
+
