@@ -1,0 +1,1 @@
+ErrorDocument 404 /Hospital_Management_System/view/error/404_not_found_error.php

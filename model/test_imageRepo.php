@@ -36,11 +36,12 @@ function findAllTestImages()
         // Check for an empty result set
         if (empty($rows)) {
 //            throw new Exception("No rows found in the 'test_image' table.");
-            $_SESSION['error_location'] = "Database -> test_imageRepo -> findAllTestImages()";
-            $_SESSION['database_error'] = "No rows found in the 'test_image' table.";
-            global $routes;
-            $database_error_page = $routes["database_error"];
-            header("Location: {$database_error_page}");
+//            $_SESSION['error_location'] = "Database -> test_imageRepo -> findAllTestImages()";
+//            $_SESSION['database_error'] = "No rows found in the 'test_image' table.";
+//            global $routes;
+//            $database_error_page = $routes["database_error"];
+//            header("Location: {$database_error_page}");
+            return null;
         }
 
         return $rows;

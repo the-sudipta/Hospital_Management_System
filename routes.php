@@ -6,7 +6,7 @@ $routes = [
     'login' => '/Hospital_Management_System/view/Login.php',
     'loader' => '/Hospital_Management_System/view/Loader.php',
     'database_error' => '/Hospital_Management_System/view/error/database_error.php',
-    'not_found_error' => '/Hospital_Management_System/view/error/400_not_found_error.php',
+    'not_found_error' => '/Hospital_Management_System/view/error/404_not_found_error.php',
 
 //    Dashboards
 
@@ -15,11 +15,16 @@ $routes = [
     'pacs_dashboard' => '/Hospital_Management_System/view/pacs/PACS_Dashboard.php',
     'ris_dashboard' => '/Hospital_Management_System/view/ris/RIS_Dashboard.php',
 
-//    Storage Locations
 
-    'ct_scan_storage' => '/Hospital_Management_System/view/storage/ct',
-    'mri_scan_storage' => '/Hospital_Management_System/view/storage/mri',
-    'x_ray_scan_storage' => '/Hospital_Management_System/view/storage/x_ray',
+//    PACS Links
+
+    'pacs_view_images' => '/Hospital_Management_System/view/pacs/PACS_View_Images.php',
+    'pacs_upload_images' => '/Hospital_Management_System/view/pacs/PACS_Upload_Images.php',
+    'pacs_my_profile' => '/Hospital_Management_System/~',
+
+
+//    Image_Location Route
+    'image_location' => '/Hospital_Management_System/controller/pacs/uploads/',
 
 
 
@@ -30,6 +35,10 @@ $backend_routes = [
     'login_controller' => '/Hospital_Management_System/controller/LoginController.php',
     'logout_controller' => '/Hospital_Management_System/controller/LogoutController.php',
 
+//    PACS Links
+
+    'pacs_upload_images_controller' => '/Hospital_Management_System/controller/pacs/PACS_Upload_ImagesController.php',
+
 ];
 
 
@@ -39,4 +48,4 @@ $image_routes = [
 
 ];
 
-?>
+

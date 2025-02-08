@@ -1,17 +1,20 @@
 <?php
 global $routes, $backend_routes, $image_routes;
 require '../../routes.php';
-//include '../Loader.php';
-
-$Login_page = $routes['login'];
-$pacs_dashboard = $routes["pacs_dashboard"];
-
-
-$logout_controller = $backend_routes['logout_controller'];
-
-
 require_once __DIR__ . '/../../model/CalculationRepo.php';
 require_once __DIR__ . '/../../view/Data_Provider.php';
+//include '../Loader.php';
+
+// Navigation Routes Frontend
+$Login_page = $routes['login'];
+$pacs_dashboard = $routes["pacs_dashboard"];
+$pacs_view_images = $routes["pacs_view_images"];
+$pacs_upload_images = $routes["pacs_upload_images"];
+
+
+// Backend Routes
+$logout_controller = $backend_routes['logout_controller'];
+
 
 @session_start();
 if($_SESSION["user_id"] <= 0){
@@ -19,7 +22,14 @@ if($_SESSION["user_id"] <= 0){
     header("Location: {$Login_page}");
 }
 
+
+// Gather Necessary Data
 $user_id = $_SESSION["user_id"];
+$total_images = getTotalImagesCount() > 0? getTotalImagesCount() : 0;
+$pending_report = getPendingReportsCount() > 0? getPendingReportsCount() : 0;
+$reviewed_report = getReviewedReportsCount() > 0? getReviewedReportsCount() : 0;
+$today_scanned = getTodayImageCount() > 0? getTodayImageCount() : 0;
+
 
 
 
@@ -31,7 +41,7 @@ $user_id = $_SESSION["user_id"];
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PACS Dashboard</title>
+    <title>PACS - Dashboard</title>
     <style>
         * {
             margin: 0;
@@ -197,37 +207,36 @@ $user_id = $_SESSION["user_id"];
 
 <div class="dashboard">
     <div class="sidebar">
-        <h2>PACS Dashboard</h2>
+        <h2>Picture Archiving and Communication System</h2>
         <ul class="menu">
-            <li class="active" onclick="showContent('overview', this)">Overview</li>
-            <li onclick="showContent('images', this)">View Images</li>
-            <li onclick="showContent('reports', this)">Radiology Reports</li>
-            <li onclick="showContent('schedule', this)">Manage Schedule</li>
-            <li onclick="showContent('access-log', this)">Access Logs</li>
+            <li class="active" onclick="window.location.href='<?php echo $pacs_dashboard; ?>'">Overview</li>
+            <li onclick="window.location.href='<?php echo $pacs_view_images; ?>'">View Images</li>
+             <li onclick="window.location.href='<?php echo $pacs_upload_images; ?>'">Upload</li>
+
         </ul>
-        <button class="logout-btn" onclick="logout()">Logout</button>
+        <button class="logout-btn" onclick="window.location.href='<?php echo $logout_controller; ?>'">Logout</button>
     </div>
 
     <div class="content">
         <div class="top-bar">
             <h1>Welcome to PACS</h1>
-            <button class="logout-btn" onclick="logout()">Logout</button>
+            <button class="logout-btn" onclick="window.location.href='<?php echo $logout_controller; ?>'">Logout</button>
         </div>
 
         <div id="main-content">
-            <div id="overview" class="section">
+            <div id="overview" class="section" style="display: block">
                 <div class="card-container">
                     <div class="card">
                         <h3>Total Images</h3>
-                        <p>1200+</p>
+                        <p><?php echo $total_images;?></p>
                     </div>
                     <div class="card">
                         <h3>Pending Reports</h3>
-                        <p>35</p>
+                        <p><?php echo $pending_report;?></p>
                     </div>
                     <div class="card">
-                        <h3>Completed Reports</h3>
-                        <p>220</p>
+                        <h3>Reviewed Reports</h3>
+                        <p><?php echo $reviewed_report;?></p>
                     </div>
                 </div>
 
@@ -235,7 +244,7 @@ $user_id = $_SESSION["user_id"];
                     <div class="fun-box">💡 Quick Tip: Always verify report accuracy!</div>
                     <div class="fun-box">📌 Fun Fact: The first MRI scan was in 1977.</div>
                     <div class="fun-box">⏳ Current Server Load: %</div>
-                    <div class="fun-box">🚀 Daily Scans Processed: 580</div>
+                    <div class="fun-box">🚀 Daily Scans Processed: <?php echo $today_scanned;?></div>
                 </div>
             </div>
 
@@ -248,20 +257,6 @@ $user_id = $_SESSION["user_id"];
     </div>
 </div>
 
-<script>
-    function showContent(section, element) {
-        document.querySelectorAll(".section").forEach(el => el.style.display = "none");
-        document.getElementById(section).style.display = "block";
-
-        document.querySelectorAll(".menu li").forEach(li => li.classList.remove("active"));
-        element.classList.add("active");
-    }
-
-    function logout() {
-        alert("Logging out...");
-        window.location.href = "login.html";
-    }
-</script>
 
 <!-- Add Chart.js Library -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -271,6 +266,8 @@ $user_id = $_SESSION["user_id"];
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <script>
+
+    // document.getElementById("overview").style.display = "block";
 
     var SERVER_LOAD = 0; // Global server load variable
 
