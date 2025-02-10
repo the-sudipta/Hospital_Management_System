@@ -88,7 +88,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 exit;
             }
         } else {
-            echo '<br>Returning to Login page because ID Password did not matched<br>';
+            echo '<br>Returning to Login page because ID Password did not match<br>';
             $errorMessage = urldecode("Email and Password did not match");
             header("Location: {$Login_page}?message=$errorMessage");
             exit;

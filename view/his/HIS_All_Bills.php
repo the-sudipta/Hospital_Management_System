@@ -145,7 +145,7 @@ $user_id = $_SESSION["user_id"];
 </head>
 <body>
 
-<div class="center-circle">Welcome</div>
+<!-- Main Body -->
 
 <div class="nav-button" onclick="toggleNav()">☰</div>
 <div class="nav-panel" id="navPanel">

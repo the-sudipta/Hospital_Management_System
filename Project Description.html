@@ -13,6 +13,10 @@
         th { background-color: #007bff; color: white; cursor: pointer; }
         tr:nth-child(even) { background-color: #f2f2f2; }
     </style>
+    <script type="module">
+        import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+        mermaid.initialize({ startOnLoad: true });
+    </script>
 </head>
 <body>
 <div class="container">
@@ -90,6 +94,100 @@
         <tr><td>log</td><td>id, action, timestamp, user_id</td><td>user_id → users(id)</td></tr>
         </tbody>
     </table>
+
+    <div id="er_diagram">
+        <pre class="mermaid">
+
+            erDiagram
+            USER {
+                INT id PK
+                STRING email
+                STRING password
+                STRING role
+                STRING created_at
+                STRING status
+            }
+            PATIENT {
+                INT id PK
+                STRING name
+                STRING dob
+                STRING gender
+                STRING contact
+                STRING address
+            }
+            APPOINTMENT {
+                INT id PK
+                STRING appointment_date
+                STRING status
+                INT patient_id FK
+                INT booked_by_id FK
+            }
+            BILLING {
+                INT id PK
+                STRING amount
+                STRING status
+                STRING date
+                INT patient_id FK
+            }
+            LOG {
+                INT id PK
+                STRING action
+                STRING timestamp
+                INT user_id FK
+            }
+            MESSAGE {
+                INT id PK
+                STRING message
+                STRING timestamp
+                INT sender_id FK
+                INT receiver_id FK
+            }
+            REPORT {
+                INT id PK
+                STRING report_text
+                STRING status
+                STRING created_at
+                INT patient_id FK
+                INT uploader_id FK
+            }
+            TEST_IMAGE {
+                INT id PK
+                STRING image
+                STRING image_type
+                STRING upload_date
+                INT patient_id FK
+                INT report_id FK
+                INT uploader_id FK
+            }
+            TEST_SCHEDULE {
+                INT id PK
+                STRING exam_type
+                STRING date
+                INT patient_id FK
+                INT booked_by_id FK
+            }
+
+            USER ||--o{ APPOINTMENT : "books"
+            USER ||--o{ MESSAGE : "sends"
+            USER ||--o{ LOG : "logs"
+            USER ||--o{ TEST_IMAGE : "uploads"
+            USER ||--o{ REPORT : "uploads"
+            USER ||--o{ TEST_SCHEDULE : "books"
+            USER ||--o{ MESSAGE : "receives"
+
+            PATIENT ||--o{ APPOINTMENT : "has"
+            PATIENT ||--o{ BILLING : "has"
+            PATIENT ||--o{ REPORT : "has"
+            PATIENT ||--o{ TEST_IMAGE : "has"
+            PATIENT ||--o{ TEST_SCHEDULE : "has"
+
+            REPORT ||--o{ TEST_IMAGE : "contains"
+
+        </pre>
+    </div>
+</div>
+
+
 </div>
 
 <script>

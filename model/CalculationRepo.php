@@ -56,3 +56,52 @@ function getReviewedReportsCount()
     return count($reviewedReports);
 }
 
+
+function getUpcomingTestSchedule($patient_id)
+{
+    $next_test_schedule_info = null;
+    $all_schedules_of_the_patient = findAllTestSchedulesByPatientID($patient_id);
+
+    if (!empty($all_schedules_of_the_patient)) {
+        $current_date = date('Y-m-d'); // Get today's date
+
+        foreach ($all_schedules_of_the_patient as $schedule) {
+            $test_date = $schedule['date']; // Assuming 'test_date' is the field storing the date
+
+            // Check if the test date is in the future
+            if ($test_date >= $current_date) {
+                // If it's the first future test date or earlier than the current stored one, update it
+                if ($next_test_schedule_info === null || $test_date < $next_test_schedule_info) {
+                    $next_test_schedule_info = $schedule;
+                }
+            }
+        }
+    }
+
+    return $next_test_schedule_info ?: "No upcoming test scheduled";
+}
+
+
+function getUpcomingAppointment($patient_id)
+{
+    $next_appointment_date = null;
+    $all_appointments_of_the_patient = findAllAppointmentsByPatientID($patient_id);
+
+    if (!empty($all_appointments_of_the_patient)) {
+        $current_date = date('Y-m-d'); // Get today's date
+
+        foreach ($all_appointments_of_the_patient as $appointment) {
+            $appointment_date = $appointment['appointment_date']; // Assuming 'test_date' is the field storing the date
+
+            // Check if the test date is in the future
+            if ($appointment_date >= $current_date && strtolower($appointment['status']) ==='pending') {
+                // If it's the first future test date or earlier than the current stored one, update it
+                if ($next_appointment_date === null || $appointment_date < $next_appointment_date) {
+                    $next_appointment_date = $appointment_date;
+                }
+            }
+        }
+    }
+
+    return $next_appointment_date ?: "No upcoming Appointment scheduled";
+}

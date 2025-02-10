@@ -180,7 +180,7 @@ if (isset($_GET['message'])) {
             backdrop-filter: blur(8px);
         }
 
-        /* Backend Error - Yellow & Warn-Like */
+        /* Backend Error - Red & Warn-Like */
         #backendValidationModal {
             background: rgba(255, 0, 0, 0.2);
             color: white;

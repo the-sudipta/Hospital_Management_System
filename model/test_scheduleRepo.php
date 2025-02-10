@@ -150,7 +150,8 @@ function findAllTestSchedulesByPatientID($patient_id)
             $_SESSION['database_error'] = "No rows found in the 'test_schedule' table for that patient_id.";
             global $routes;
             $database_error_page = $routes["database_error"];
-            header("Location: {$database_error_page}");
+//            header("Location: {$database_error_page}");
+            return [];
         }
 
         return $rows;

@@ -147,10 +147,11 @@ function findAllTestImagesByPatientID($patient_id)
         if (empty($rows)) {
 //            throw new Exception("No rows found in the 'appointment' table for that his_patient_id.");
             $_SESSION['error_location'] = "Database -> test_imageRepo -> findAllTestImagesByPatientID()";
-            $_SESSION['database_error'] = "No rows found in the 'pacs_image' table for that his_patient_id.";
+            $_SESSION['database_error'] = "No rows found in the 'test_image' table for that his_patient_id.";
             global $routes;
             $database_error_page = $routes["database_error"];
-            header("Location: {$database_error_page}");
+//            header("Location: {$database_error_page}");
+            return [];
         }
 
         return $rows;

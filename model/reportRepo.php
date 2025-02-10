@@ -147,10 +147,11 @@ function findAllReportsByPatientID($patient_id)
         if (empty($rows)) {
 //            throw new Exception("No rows found in the 'appointment' table for that his_patient_id.");
             $_SESSION['error_location'] = "Database -> reportRepo -> findAllReportsByPatientID()";
-            $_SESSION['database_error'] = "No rows found in the 'pacs_report' table for that his_patient_id.";
+            $_SESSION['database_error'] = "No rows found in the 'report' table for that his_patient_id.";
             global $routes;
             $database_error_page = $routes["database_error"];
-            header("Location: {$database_error_page}");
+//            header("Location: {$database_error_page}");
+            return [];
         }
 
         return $rows;
