@@ -4,13 +4,13 @@ global $routes;
 require '../../routes.php';
 
 
-require_once __DIR__ . '/../../model/appointmentRepo.php';
+require_once __DIR__ . '/../../model/billingRepo.php';
 
 
 @session_start();
 
 $login_page = $routes['login'];
-$his_all_bill_page = $routes['his_all_appointments'];
+$his_all_appointment_page = $routes['his_all_appointments'];
 $error_page_500 = $routes['internal_server_error'];
 
 $user_id = $_SESSION['user_id'];
@@ -18,21 +18,21 @@ $user_id = $_SESSION['user_id'];
 $everythingOK = FALSE;
 $everythingOKCounter = 0;
 
-$delete_bill_id = $_POST['delete_bill_id'];
+$delete_appointment_id = $_POST['delete_bill_id'];
 
 $decision = false;
 
-echo '<br><h1> Received Patient ID = '.$delete_bill_id.'</h1><br>';
+echo '<br><h1> Received Patient ID = '.$delete_appointment_id.'</h1><br>';
 
 try {
-    $decision = deleteAppointment( $delete_bill_id);
+    $decision = deleteBilling( $delete_appointment_id);
     if ($decision) {
         echo '<br><h1> Decision Update = '.$decision.'</h1><br>';
-        header("Location: {$his_all_bill_page}");
+        header("Location: {$his_all_appointment_page}");
         exit;
     } else {
-        $errorMessage = urldecode("Failed to delete the bill");
-        header("Location: {$his_all_bill_page}?message=$errorMessage");
+        $errorMessage = urldecode("Failed to delete the appointment");
+        header("Location: {$his_all_appointment_page}?message=$errorMessage");
         exit;
     }
 } catch (Exception $e) {

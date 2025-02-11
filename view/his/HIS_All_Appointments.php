@@ -39,6 +39,14 @@ $user_id = $_SESSION["user_id"];
 $all_appointments = findAllAppointments();
 
 
+$error_message = "";
+// Message from Backend
+if (isset($_GET['message'])) {
+    $error_message = htmlspecialchars($_GET['message']);
+    $show_backend_error_modal = true;
+}
+
+
 
 
 ?>
@@ -280,11 +288,84 @@ $all_appointments = findAllAppointments();
             text-decoration: none;
         }
 
+
+        /*  Status color code  */
+        .badge {
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-weight: bold;
+            color: #fff;
+        }
+
+        .badge-pending { background: #f39c12; }    /* Orange */
+        .badge-confirmed { background: #3498db; }  /* Blue */
+        .badge-completed { background: #2ecc71; }  /* Green */
+        .badge-cancelled { background: #e74c3c; }  /* Red */
+
+
     </style>
+
+    <style>
+        /*  CSS for Error Message Modal  */
+
+        /* Backend Error - Red & Warn-Like */
+        .alert {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            width: 350px;
+            padding: 15px;
+            border-radius: 12px;
+            box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.2);
+            display: none;
+            font-family: 'Poppins', sans-serif;
+            animation: fadeInSlide 0.5s ease-in-out;
+        }
+        #backendValidationModal {
+            background: rgba(255, 0, 0, 0.2);
+            color: white;
+            border-left: 5px solid #ff4b2b;
+            backdrop-filter: blur(8px);
+        }
+
+        /* Close Button */
+        .alert span {
+            cursor: pointer;
+            font-size: 20px;
+            font-weight: bold;
+            position: absolute;
+            top: 5px;
+            right: 10px;
+            transition: transform 0.3s ease;
+        }
+
+        .alert span:hover {
+            transform: scale(1.2);
+        }
+
+        /* Alert Text */
+        .alert p {
+            margin: 0;
+            font-size: 16px;
+            font-weight: bold;
+            text-align: center;
+        }
+
+
+    </style>
+
 </head>
 <body>
 
 <!-- Main Body -->
+
+
+<!-- Backend Validation Modal -->
+<div id="backendValidationModal" class="alert">
+    <span onclick="close_backend_modal();">&times;</span>
+    <p id="backendValidationMessage"><?php echo $error_message; ?></p>
+</div>
+
 
 <!-- Centered Table -->
 <div class="table-container" style="position: relative;">
@@ -302,15 +383,24 @@ $all_appointments = findAllAppointments();
         </tr>
         </thead>
         <tbody id="tableBody">
-        <?php
-        // Assuming $all_patients is an array of associative arrays
-        foreach ($all_appointments as $appointment) {
-            $patient_name = getPatientNameByID($appointment['patient_id']);
-            echo "<tr>
+            <?php
+                $statuses = [
+                    'pending' => 'badge-pending',
+                    'confirmed' => 'badge-confirmed',
+                    'completed' => 'badge-completed',
+                    'cancelled' => 'badge-cancelled'
+                ];
+
+                foreach ($all_appointments as $appointment) {
+                    $patient_name = getPatientNameByID($appointment['patient_id']);
+                    $status_lower = strtolower($appointment['status']);
+                    $badge_class = $statuses[$status_lower] ?? 'badge-default';
+
+                    echo "<tr>
                     <td>{$appointment['id']}</td>
                     <td>{$patient_name}</td>
                     <td>{$appointment['appointment_date']}</td>
-                    <td>{$appointment['status']}</td>
+                    <td><span class='badge $badge_class'>{$appointment['status']}</span></td>
                     <td>
                         <form action='$his_single_appointment' method='POST'>
                             <input type='hidden' name='view_appointment_id' value='{$appointment['id']}'>
@@ -324,8 +414,9 @@ $all_appointments = findAllAppointments();
                         </form>
                     </td>
                   </tr>";
-        }
-        ?>
+                }
+            ?>
+
         </tbody>
     </table>
 </div>
@@ -366,6 +457,21 @@ $all_appointments = findAllAppointments();
     }
 
 </script>
+
+<script>
+    // Show and Close Error Modal for Backend Validation
+    window.onload = function () {
+        var errorMessage = "<?php echo addslashes($error_message); ?>";
+        if (errorMessage.trim() !== "") {
+            document.getElementById('backendValidationModal').style.display = 'block';
+        }
+    };
+
+    function close_backend_modal() {
+        document.getElementById("backendValidationModal").style.display = "none";
+    }
+</script>
+
 
 
 

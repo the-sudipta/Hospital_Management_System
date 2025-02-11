@@ -64,7 +64,7 @@ $all_patients = findAllPatients();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HIS - View Appointment</title>
+    <title>HIS - Create Appointment</title>
 
     <!--  Dynamic Search Purpose  -->
     <!-- Include jQuery and Select2 CSS & JS -->

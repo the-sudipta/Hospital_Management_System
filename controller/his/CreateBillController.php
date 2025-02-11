@@ -5,12 +5,12 @@ global $routes;
 require '../../routes.php';
 
 
-require_once __DIR__ . '/../../model/appointmentRepo.php';
+require_once __DIR__ . '/../../model/billingRepo.php';
 
 
 $Login_page = $routes['login'];
-$create_appointment_page = $routes['his_create_appointment'];
-$all_appointment_page = $routes['his_all_appointments'];
+$create_bill_page = $routes['his_create_bill'];
+$all_bill_page = $routes['his_all_bills'];
 $errorMessage = "";
 
 
@@ -33,20 +33,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $appointed_patient_id = $_POST['patient_id'];
 
 
-    //* Appointment Date Validation
-    $appointment_date = $_POST['appointment_date'];
-    $current_date = date("Y-m-d"); // Get today's date
+    //* Bill Amount Validation
+    $bill_amount = $_POST['bill_amount'];
 
-    if (empty($appointment_date)) {
+    // Convert Number with decimal points to string
+    if (empty($bill_amount)) {
         $everythingOK = FALSE;
         $everythingOKCounter += 1;
-        echo '<br>Appointment Date Error: Appointment Date is empty<br>';
-        $errorMessage = urldecode("Appointment Date is empty");
-    } elseif ($appointment_date < $current_date) {
+        echo '<br>Bill Amount Error: Bill Amount is empty<br>';
+        $errorMessage = urldecode("Bill Amount is empty");
+    } elseif (!is_numeric($bill_amount)) {
         $everythingOK = FALSE;
         $everythingOKCounter += 1;
-        echo '<br>Appointment Date Error: Past dates are not allowed.<br>';
-        $errorMessage = urldecode("Past dates are not allowed");
+        // If $bill_amount is not a numerical (integer or decimal) type
+        echo '<br>Bill Amount Error: Only Numerical Data Allowed.<br>';
+        $errorMessage = urldecode("Only Numerical Data Allowed");
     } else {
         $everythingOK = TRUE;
     }
@@ -55,17 +56,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 
 
+    $current_date = date("Y-m-d"); // Get today's date
+
+
 
     if ($everythingOK && $everythingOKCounter === 0) {
 
 
-        $appointment_id = createAppointment($appointment_date, 'Pending', $appointed_patient_id, $user_id);
+//        $appointment_id = createBilling($current_date, 'Pending', $appointed_patient_id, $user_id);
+        $appointment_id = createBilling($appointed_patient_id, $bill_amount, 'Pending', $current_date);
 //        echo '<br><br>';
         echo '<br>Everything is ok<br>';
         echo '<br>ID found = ' . isset($appointment_id) . ' <br>';
         if ($appointment_id > 0) {
 
-            header("Location: {$all_appointment_page}");
+            header("Location: {$all_bill_page}");
             exit;
 
 
@@ -73,12 +78,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         } else {
             echo '<br>Returning to Create Appointment page because Appointment data could not be stored in the database<br>';
             $errorMessage = urldecode("Cannot store Appointment data");
-            header("Location: {$create_appointment_page}?message=$errorMessage");
+            header("Location: {$create_bill_page}?message=$errorMessage");
             exit;
         }
     } else {
         echo '<br>Returning to Create Patient page because The data user provided is not properly validated. <br>';
-        header("Location: {$create_appointment_page}?message=$errorMessage");
+        header("Location: {$create_bill_page}?message=$errorMessage");
         exit;
     }
 

@@ -67,6 +67,10 @@ $backend_routes = [
     'update_appointment_controller' => '/Hospital_Management_System/~',
     'delete_appointment_controller' => '/Hospital_Management_System/controller/his/DeleteAppointmentController.php',
 
+    'create_bill_controller' => '/Hospital_Management_System/controller/his/CreateBillController.php',
+    'update_bill_controller' => '/Hospital_Management_System/~',
+    'delete_bill_controller' => '/Hospital_Management_System/controller/his/DeleteBillController.php',
+
 ];
 
 

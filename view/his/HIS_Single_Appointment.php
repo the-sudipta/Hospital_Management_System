@@ -67,6 +67,18 @@ if (isset($_GET['id'])) {
 $single_appointment_data = findAppointmentByID($update_appointment_id);
 $patient_details = findPatientByID($single_appointment_data['patient_id']);
 
+// Status Color
+$statuses = [
+    'pending' => 'status-pending',
+    'confirmed' => 'status-confirmed',
+    'completed' => 'status-completed',
+    'cancelled' => 'status-cancelled'
+];
+
+$status_lower = strtolower($single_appointment_data['status']);
+$status_class = $statuses[$status_lower] ?? 'status-default';
+
+
 
 ?>
 
@@ -372,6 +384,25 @@ $patient_details = findPatientByID($single_appointment_data['patient_id']);
 
     </style>
 
+    <style>
+        /* Status Badge Styling */
+        .status-badge {
+            display: inline-block;
+            text-align: center;
+            font-weight: bold;
+            border-radius: 5px;
+            padding: 10px;
+            color: white;
+            border: none;
+            width: 100%;
+        }
+
+        .status-pending { background: #f39c12; }    /* Orange */
+        .status-confirmed { background: #3498db; }  /* Blue */
+        .status-completed { background: #2ecc71; }  /* Green */
+        .status-cancelled { background: #e74c3c; }  /* Red */
+    </style>
+
 
 </head>
 <body>
@@ -424,7 +455,14 @@ $patient_details = findPatientByID($single_appointment_data['patient_id']);
         </div>
 
         <div class="input-group">
-            <input type="text" id="status" name="status" value="<?php echo $single_appointment_data['status']?>" disabled>
+            <!-- Visible Status Badge -->
+            <span class="status-badge <?php echo $status_class; ?>">
+                <?php echo htmlspecialchars($single_appointment_data['status']); ?>
+             </span>
+
+            <!-- Hidden Input to Send Data to Backend -->
+            <input type="hidden" id="status" name="status" value="<?php echo htmlspecialchars($single_appointment_data['status']); ?>">
+
             <label for="status">Appointment Status</label>
             <span class="error-message"></span>
         </div>
