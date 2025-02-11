@@ -36,6 +36,17 @@ $routes = [
     'his_single_bill' => '/Hospital_Management_System/view/his/HIS_Single_Bill.php',
     'his_single_patient' => '/Hospital_Management_System/view/his/HIS_Single_Patient.php',
 
+//    RIS Links
+
+    'ris_all_reports' => '/Hospital_Management_System/view/ris/RIS_All_Reports.php',
+    'ris_all_schedules' => '/Hospital_Management_System/view/ris/RIS_All_Schedules.php',
+    'ris_create_report' => '/Hospital_Management_System/view/ris/RIS_Create_Report.php',
+    'ris_create_schedule' => '/Hospital_Management_System/view/ris/RIS_Create_Schedule.php',
+    'ris_single_report' => '/Hospital_Management_System/view/ris/RIS_Single_Report.php',
+    'ris_single_schedule' => '/Hospital_Management_System/view/ris/RIS_Single_Schedule.php',
+
+
+
 
 
 
@@ -70,6 +81,18 @@ $backend_routes = [
     'create_bill_controller' => '/Hospital_Management_System/controller/his/CreateBillController.php',
     'update_bill_controller' => '/Hospital_Management_System/~',
     'delete_bill_controller' => '/Hospital_Management_System/controller/his/DeleteBillController.php',
+
+
+//    RIS Links
+
+
+    'create_report_controller' => '/Hospital_Management_System/controller/ris/CreateReportController.php',
+    'update_report_controller' => '/Hospital_Management_System/controller/ris/UpdateReportController.php',
+    'delete_report_controller' => '/Hospital_Management_System/controller/ris/DeleteReportController.php',
+
+    'create_schedule_controller' => '/Hospital_Management_System/controller/ris/CreateScheduleController.php',
+    'update_schedule_controller' => '/Hospital_Management_System/controller/ris/UpdateScheduleController.php',
+    'delete_schedule_controller' => '/Hospital_Management_System/controller/ris/DeleteScheduleController.php',
 
 ];
 

@@ -170,13 +170,14 @@ function findAllReportsByPatientID($patient_id)
 }
 
 
-function updateReportText($report_text, $id)
+function updateReportTextAndStatus($report_text, $status, $id)
 {
     $conn = db_conn();
 
     // Construct the SQL query
     $updateQuery = "UPDATE `report` SET 
-                    report_text =?
+                    report_text =?,
+                    status =?
                     WHERE id = ?";
 
     try {
@@ -194,7 +195,7 @@ function updateReportText($report_text, $id)
         }
 
         // Bind parameters
-        $stmt->bind_param('si', $report_text, $id);
+        $stmt->bind_param('ssi', $report_text, $status, $id);
 
         // Execute the query
         $stmt->execute();

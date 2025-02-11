@@ -105,3 +105,72 @@ function getUpcomingAppointment($patient_id)
 
     return $next_appointment_date ?: "No upcoming Appointment scheduled";
 }
+
+
+function totalReports()
+{
+    $all_reports = findAllReports();
+    $today = date('Y-m-d');
+    $startOfWeek = date('Y-m-d', strtotime('monday this week'));
+    $startOfMonth = date('Y-m-01');
+
+    $total_today = 0;
+    $total_this_week = 0;
+    $total_this_month = 0;
+    $pending_counter = 0;
+
+    foreach ($all_reports as $report) {
+        $reportDate = $report['created_at']; // Assuming the date is stored as 'YYYY-MM-DD'
+
+        if ($reportDate === $today) {
+            $total_today++;
+        }
+        if ($reportDate >= $startOfWeek) {
+            $total_this_week++;
+        }
+        if ($reportDate >= $startOfMonth) {
+            $total_this_month++;
+        }
+
+        if(strtolower($report['status']) === 'pending') {
+            $pending_counter++;
+        }
+
+    }
+
+    return [
+        'total_report_count_today' => $total_today,
+        'total_report_count_this_week' => $total_this_week,
+        'total_report_count_this_month' => $total_this_month,
+        'total_pending' => $pending_counter,
+    ];
+}
+
+function getScheduleCount()
+{
+    $today = date('Y-m-d'); // Get today's date in 'YYYY-MM-DD' format
+
+    $total_today = 0;
+    $total_future = 0;
+    $total_past = 0;
+
+    $all_schedule = findAllTestSchedules();
+
+    foreach ($all_schedule as $schedule) {
+        if ($schedule['date'] === $today) {
+            $total_today++;
+        } elseif ($schedule['date'] > $today) {
+            $total_future++;
+        } else {
+            $total_past++;
+        }
+    }
+
+    return [
+        'total_report_count_today' => $total_today,
+        'total_report_count_future' => $total_future,
+        'total_report_count_past' => $total_past,
+    ];
+}
+
+
