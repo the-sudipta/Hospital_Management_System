@@ -45,6 +45,41 @@ $routes = [
     'ris_single_report' => '/Hospital_Management_System/view/ris/RIS_Single_Report.php',
     'ris_single_schedule' => '/Hospital_Management_System/view/ris/RIS_Single_Schedule.php',
 
+//    Admin Links
+
+    'admin_all_users' => '/Hospital_Management_System/view/admin/Admin_All_Users.php',
+    'admin_create_user' => '/Hospital_Management_System/view/admin/Admin_Create_User.php',
+    'admin_single_user' => '/Hospital_Management_System/view/admin/Admin_Single_User.php',
+    // Admin Patient Functionalities
+    'admin_all_patients' => '/Hospital_Management_System/~',
+    'admin_create_patient' => '/Hospital_Management_System/~',
+    'admin_single_patient' => '/Hospital_Management_System/~',
+    // Admin Appointment Functionalities
+    'admin_all_appointments' => '/Hospital_Management_System/~',
+    'admin_create_appointment' => '/Hospital_Management_System/~',
+    'admin_single_appointment' => '/Hospital_Management_System/~',
+    // Admin Schedule Functionalities
+    'admin_all_schedules' => '/Hospital_Management_System/~',
+    'admin_create_schedule' => '/Hospital_Management_System/~',
+    'admin_single_schedule' => '/Hospital_Management_System/~',
+    // Admin Report Functionalities
+    'admin_all_reports' => '/Hospital_Management_System/~',
+    'admin_create_report' => '/Hospital_Management_System/~',
+    'admin_single_report' => '/Hospital_Management_System/~',
+    // Admin Bill Functionalities
+    'admin_all_bills' => '/Hospital_Management_System/~',
+    'admin_create_bill' => '/Hospital_Management_System/~',
+    'admin_single_bill' => '/Hospital_Management_System/~',
+    // Admin Image Functionalities
+    'admin_all_images' => '/Hospital_Management_System/~',
+    'admin_upload_image' => '/Hospital_Management_System/~',
+    'admin_show_single_image' => '/Hospital_Management_System/~',
+    // Admin Log Functionalities
+    'admin_all_logs' => '/Hospital_Management_System/view/admin/Admin_All_logs.php',
+    'admin_create_log' => '/Hospital_Management_System/~',
+    'admin_single_log' => '/Hospital_Management_System/~',
+
+
 
 
 
@@ -93,6 +128,14 @@ $backend_routes = [
     'create_schedule_controller' => '/Hospital_Management_System/controller/ris/CreateScheduleController.php',
     'update_schedule_controller' => '/Hospital_Management_System/controller/ris/UpdateScheduleController.php',
     'delete_schedule_controller' => '/Hospital_Management_System/controller/ris/DeleteScheduleController.php',
+
+
+//    Admin Links
+
+    'create_user_controller' => '/Hospital_Management_System/controller/admin/Admin_Create_UserController.php',
+    'delete_user_controller' => '/Hospital_Management_System/controller/admin/Admin_DeleteUserController.php',
+    're_active_user_controller' => '/Hospital_Management_System/controller/admin/Admin_Re_Active_UserController.php',
+
 
 ];
 

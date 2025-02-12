@@ -174,3 +174,85 @@ function getScheduleCount()
 }
 
 
+function generateUserEmail($role)
+{
+    $all_users = findAllUsers(); // Retrieve all users from the database
+    $existing_emails = array_column($all_users, 'email'); // Extract all emails
+
+    $pattern = "/^" . preg_quote($role, '/') . "(\d+)@hospital\.com$/"; // Regex to match role-based emails
+    $max_serial = 0;
+
+    foreach ($existing_emails as $email) {
+        if (preg_match($pattern, $email, $matches)) {
+            $serial_no = (int)$matches[1]; // Extract serial number
+            if ($serial_no > $max_serial) {
+                $max_serial = $serial_no;
+            }
+        }
+    }
+
+    // Generate next email
+    $next_serial = $max_serial + 1;
+    return "{$role}{$next_serial}@hospital.com";
+}
+
+
+function generateUserPassword()
+{
+    $length = rand(10, 15); // Random length between 10 and 15
+
+    $upperCase = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    $lowerCase = 'abcdefghijklmnopqrstuvwxyz';
+    $numbers = '0123456789';
+    $specialChars = '!@#$%^&*()-_=+{}[]<>?/';
+
+    // Ensure at least one character from each required set
+    $password = $upperCase[rand(0, strlen($upperCase) - 1)] .
+        $lowerCase[rand(0, strlen($lowerCase) - 1)] .
+        $numbers[rand(0, strlen($numbers) - 1)] .
+        $specialChars[rand(0, strlen($specialChars) - 1)];
+
+    // Fill the remaining characters randomly
+    $allChars = $upperCase . $lowerCase . $numbers . $specialChars;
+    for ($i = 4; $i < $length; $i++) {
+        $password .= $allChars[rand(0, strlen($allChars) - 1)];
+    }
+
+    // Shuffle to mix up the characters
+    return str_shuffle($password);
+}
+
+function validatePassword($password) : string
+{
+
+    $error_message = '';
+    if (empty($password)) {
+
+        $error_message = 'Password cannot be empty';
+    } elseif (strlen($password) < 8) {
+
+        $error_message = 'Password must be at least 8 characters long';
+    } elseif (!preg_match('/[A-Z]/', $password)) {
+
+        $error_message = 'Password must contain at least one uppercase letter';
+    } elseif (!preg_match('/[a-z]/', $password)) {
+
+        $error_message = 'Password must contain at least one lowercase letter';
+    } elseif (!preg_match('/[0-9]/', $password)) {
+
+        $error_message = 'Password must contain at least one number';
+    } elseif (!preg_match('/[!@#$%^&*()\-_=+{}\[\]<>?\/]/', $password)) {
+
+        $error_message = 'Password Error: Password must contain at least one special character';
+    }
+
+    return $error_message;
+
+}
+
+function createNewLog($logText)
+{
+    $currentDateTime = date('Y-m-d H:i:s');
+    $user_id = $_SESSION["user_id"];
+    createLog($logText, $currentDateTime, $user_id);
+}

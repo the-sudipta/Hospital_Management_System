@@ -3,22 +3,45 @@ global $routes, $backend_routes, $image_routes;
 require '../../routes.php';
 require_once __DIR__ . '/../../model/CalculationRepo.php';
 require_once __DIR__ . '/../../view/Data_Provider.php';
-require_once __DIR__ . '/../../model/patientRepo.php';
-require_once __DIR__ . '/../../model/appointmentRepo.php';
+require_once __DIR__ . '/../../model/userRepo.php';
 //include '../Loader.php';
 
 // Navigation Routes Frontend
 $Login_page = $routes['login'];
-$his_dashboard = $routes["his_dashboard"];
-$his_all_appointment = $routes["his_all_appointments"];
-$his_all_bills = $routes["his_all_bills"];
-$his_all_patients = $routes["his_all_patients"];
-$his_create_appointment = $routes["his_create_appointment"];
-$his_create_bill = $routes["his_create_bill"];
-$his_create_patient = $routes["his_create_patient"];
-$his_single_appointment = $routes["his_single_appointment"];
-$his_single_bill = $routes["his_single_bill"];
-$his_single_patient = $routes["his_single_patient"];
+
+$admin_dashboard = $routes["admin_dashboard"];
+// Admin User Functionalities
+$admin_all_users = $routes["admin_all_users"];
+$admin_create_user = $routes["admin_create_user"];
+$admin_single_user = $routes["admin_single_user"];
+// Admin Patient Functionalities
+$admin_all_patients = $routes["admin_all_patients"];
+$admin_create_patient = $routes["admin_create_patient"];
+$admin_single_patient = $routes["admin_single_patient"];
+// Admin Appointment Functionalities
+$admin_all_appointments = $routes["admin_all_appointments"];
+$admin_create_appointment = $routes["admin_create_appointment"];
+$admin_single_appointment = $routes["admin_single_appointment"];
+// Admin Schedule Functionalities
+$admin_all_schedules = $routes["admin_all_schedules"];
+$admin_create_schedule = $routes["admin_create_schedule"];
+$admin_single_schedule = $routes["admin_single_schedule"];
+// Admin Report Functionalities
+$admin_all_reports = $routes["admin_all_reports"];
+$admin_create_report = $routes["admin_create_report"];
+$admin_single_report = $routes["admin_single_report"];
+// Admin Bill Functionalities
+$admin_all_bills = $routes["admin_all_bills"];
+$admin_create_bill = $routes["admin_create_bill"];
+$admin_single_bill = $routes["admin_single_bill"];
+// Admin Image Functionalities
+$admin_all_images = $routes["admin_all_images"];
+$admin_upload_image = $routes["admin_upload_image"];
+$admin_show_single_image = $routes["admin_show_single_image"];
+// Admin Log Functionalities
+$admin_all_logs = $routes["admin_all_logs"];
+$admin_create_log = $routes["admin_create_log"];
+$admin_single_log = $routes["admin_single_log"];
 
 $paper_plane_image = $image_routes["paper_plane"];
 
@@ -27,13 +50,8 @@ $paper_plane_image = $image_routes["paper_plane"];
 
 // Backend Routes
 $logout_controller = $backend_routes['logout_controller'];
-$create_appointment_controller = $backend_routes['create_appointment_controller'];;
-
-// Gather Necessary Data
-$user_id = $_SESSION["user_id"];
-$all_patients = getAllPatientsInfo();
-$error_message = "";
-$update_appointment_id = -1;
+$create_user_controller = $backend_routes['create_user_controller'];
+$re_active_user_controller = $backend_routes['re_active_user_controller'];
 
 
 @session_start();
@@ -42,6 +60,13 @@ if($_SESSION["user_id"] <= 0){
     header("Location: {$Login_page}");
 }
 
+
+// Gather Necessary Data
+$user_id = $_SESSION["user_id"];
+$all_users = findAllUsers();
+
+
+$error_message = "";
 // Message from Backend
 if (isset($_GET['message'])) {
     $error_message = htmlspecialchars($_GET['message']);
@@ -49,9 +74,8 @@ if (isset($_GET['message'])) {
 }
 
 
-
-$all_patients = findAllPatients();
-
+$all_roles = getAllRoles();
+$suggested_user_password = generateUserPassword();
 
 ?>
 
@@ -64,14 +88,7 @@ $all_patients = findAllPatients();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HIS - Create Appointment</title>
-
-    <!--  Dynamic Search Purpose  -->
-    <!-- Include jQuery and Select2 CSS & JS -->
-    <link href="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css" rel="stylesheet">
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
-
+    <title>Admin - All Users</title>
     <style>
         * {
             margin: 0;
@@ -148,6 +165,7 @@ $all_patients = findAllPatients();
             transform: translateY(20px);
             transition: transform 0.3s, opacity 0.3s;
             display: none;
+            z-index: 999;
         }
 
         .nav-panel.open {
@@ -167,6 +185,199 @@ $all_patients = findAllPatients();
             background: #58a6ff;
             color: black;
         }
+
+        /*  Table CSS  */
+        .table-container {
+            width: 80%;
+            margin: auto;
+            background: #161b22;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+        }
+
+        .table-container table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .table-container thead {
+            position: sticky;
+            top: 0;
+            background: #0d1117; /* Ensure header visibility */
+            z-index: 2;
+        }
+
+        .table-container tr {
+            display: table;
+            width: 100%;
+            table-layout: fixed;
+        }
+
+        .table-container th, .table-container td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #2d333b;
+            white-space: nowrap; /* Prevent text wrapping */
+        }
+
+        .table-container tbody {
+            display: block;
+            max-height: 300px; /* Set max height */
+            overflow-y: auto; /* Enable scrolling */
+        }
+
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #2d333b;
+
+        }
+
+        th {
+            background: #0d1117;
+            color: #58a6ff;
+        }
+
+        td {
+            color: #c9d1d9;
+        }
+
+        .table-container tbody tr td{
+            word-wrap: break-word;
+            white-space: normal;
+            overflow-wrap: break-word;
+        }
+
+        /* Custom Scrollbar */
+        .table-container tbody::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        .table-container tbody::-webkit-scrollbar-track {
+            background: #ff5555;  /* Your requested background color */
+            border-radius: 10px;
+        }
+
+        .table-container tbody::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.6);
+            border-radius: 10px;
+            border: 2px solid #ff5555;
+        }
+
+        .table-container tbody::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.9);
+        }
+
+        .view-btn {
+            background: #58a6ff;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        .delete-btn {
+            background: #ff4d4d;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        .view-btn:hover { background: #1f6feb; }
+        .delete-btn:hover { background: #cc0000; }
+
+        #searchInput {
+            float: right;
+            margin-bottom: 10px;
+            padding: 8px;
+            border-radius: 5px;
+            border: 1px solid #58a6ff;
+            background: #0d1117;
+            color: #c9d1d9;
+        }
+
+        .add-new-button {
+            background: #58a6ff;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            text-align: center;
+            cursor: pointer;
+            position: absolute;
+            top: 20px;
+            left: 20px;
+        }
+
+        .add-new-button:hover {
+            background: #1f6feb;
+            transform: translateY(-2px);
+        }
+
+        .add-new-button a {
+            all: unset; /* Resets all default link styles */
+            cursor: pointer; /* Ensures it still looks clickable */
+            text-decoration: none;
+        }
+
+
+        /*  Status color code  */
+        .badge {
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-weight: bold;
+            color: #fff;
+        }
+
+        .badge-pending { background: #f39c12; }    /* Orange */
+        .badge-confirmed { background: #3498db; }  /* Blue */
+        .badge-completed { background: #2ecc71; }  /* Green */
+        .badge-cancelled { background: #e74c3c; }  /* Red */
+
+        @keyframes borderAnimation {
+            0% {
+                border-image-source: linear-gradient(45deg, red, white);
+            }
+            50% {
+                border-image-source: linear-gradient(45deg, blue, white);
+            }
+            100% {
+                border-image-source: linear-gradient(45deg, green, white);
+            }
+        }
+
+        //* Style for visually disabled button */
+        .delete-btn:disabled {
+            background-color: #ccc !important;
+            color: #666 !important;
+            cursor: not-allowed !important;
+            border: 1px solid #999 !important;
+            opacity: 0.6;
+        }
+
+        /* Style for Re-Activate button */
+        .reactivate-btn {
+            background-color: #28a745; /* Green */
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        .reactivate-btn:hover {
+            background-color: #218838;
+        }
+
 
     </style>
 
@@ -288,6 +499,32 @@ $all_patients = findAllPatients();
             box-shadow: 0 10px 20px rgba(88, 166, 255, 0.4);
         }
 
+
+        .custom-dropdown {
+            width: 100%;
+            padding: 12px;
+            margin-top: 10px;
+            background: #21262d;
+            color: #c9d1d9;
+            border: 2px solid #58a6ff;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .custom-dropdown:hover {
+            border-color: #c9d1d9;
+        }
+
+        .custom-dropdown:focus {
+            outline: none;
+            background: #ff5555;
+            color: white;
+            border-color: #c9d1d9;
+            box-shadow: 0px 0px 10px rgba(88, 166, 255, 0.6);
+        }
+
     </style>
 
     <style>
@@ -369,54 +606,10 @@ $all_patients = findAllPatients();
 
     </style>
 
-    <!-- Searchable Dropdown CSS  -->
-    <style>
-        .custom-dropdown {
-            position: relative;
-            width: 100%;
-        }
-
-        .custom-dropdown input {
-            width: 100%;
-            padding: 12px;
-            border-radius: 8px;
-            border: none;
-            background: rgba(13, 17, 23, 0.7);
-            color: #c9d1d9;
-            font-size: 1rem;
-            box-shadow: 0 0 8px rgba(88, 166, 255, 0.3);
-            cursor: pointer;
-        }
-
-        .dropdown-options {
-            display: none;
-            position: absolute;
-            width: 100%;
-            background: rgba(22, 27, 34, 0.9);
-            border-radius: 8px;
-            border: 1px solid rgba(88, 166, 255, 0.4);
-            max-height: 200px;
-            overflow-y: auto;
-            box-shadow: 0 0 15px rgba(88, 166, 255, 0.3);
-            z-index: 1000;
-        }
-
-        .dropdown-item {
-            padding: 10px;
-            color: #c9d1d9;
-            cursor: pointer;
-            transition: background 0.2s ease-in-out;
-            text-align: left; /* Left-align the text */
-        }
-
-        .dropdown-item:hover {
-            background: rgba(88, 166, 255, 0.3);
-        }
-    </style>
-
-
 </head>
 <body>
+
+<!-- Main Body -->
 
 
 <!-- Backend Validation Modal -->
@@ -425,34 +618,37 @@ $all_patients = findAllPatients();
     <p id="backendValidationMessage"><?php echo $error_message; ?></p>
 </div>
 
+
+
 <!-- Main Body -->
 <div class="form-container" id="formContainer">
-    <h2>Appointment Details</h2>
-    <form id="patient-form" action="<?php echo $create_appointment_controller; ?>" method="POST">
+    <h2>User Details</h2>
+    <form id="patient-form" action="<?php echo $create_user_controller; ?>" method="POST">
 
         <div class="input-group">
-            <input type="date" id="appointment_date" name="appointment_date">
-            <label for="date_of_birth">Appointment Date</label>
+            <input type="email" id="create_email" name="create_email">
+            <label for="create_email">Email</label>
             <span class="error-message"></span>
         </div>
 
         <div class="input-group">
-            <div class="custom-dropdown">
-                <input type="text" id="patient_search" placeholder="Search Patient..." onkeyup="filterPatients()" onclick="toggleDropdown()">
-                <div id="dropdown_list" class="dropdown-options">
-                    <?php foreach ($all_patients as $patient): ?>
-                        <div class="dropdown-item" onclick="selectPatient('<?php echo htmlspecialchars($patient['id']); ?>', '<?php echo htmlspecialchars($patient['id'] . ' - ' . $patient['name'] . ' - ' . $patient['address']); ?>')">
-                            <?php echo htmlspecialchars($patient['id'] . ' - ' . $patient['name'] . ' - ' . $patient['address']); ?>
-                        </div>
-                    <?php endforeach; ?>
-                </div>
-            </div>
-            <input type="hidden" id="patient_id" name="patient_id">
-            <label for="patient_id">Patient</label>
+            <input type="text" id="create_password" name="create_password" value="<?php echo $suggested_user_password; ?>">
+            <label for="create_password">Password</label>
             <span class="error-message"></span>
         </div>
 
-        <button type="submit" class="submit-btn">Book Appointment</button>
+        <select id="create_role" name="create_role" class="custom-dropdown">
+            <option value="" disabled selected>Select Test Type</option>
+            <?php foreach ($all_roles as $role) : ?>
+                <option value="<?php echo htmlspecialchars($role); ?>">
+                    <?php echo htmlspecialchars($role); ?>
+                </option>
+            <?php endforeach; ?>
+        </select>
+
+
+
+        <button type="submit" class="submit-btn">Create User</button>
     </form>
 </div>
 
@@ -461,16 +657,28 @@ $all_patients = findAllPatients();
 
 
 
+
+
+
+
+
+
+
 <div class="nav-button" onclick="toggleNav()">☰</div>
 <div class="nav-panel" id="navPanel">
-    <a href="<?php echo $his_all_patients; ?>">Patients</a>
-    <a class="active" href="<?php echo $his_all_appointment; ?>">Appointments</a>
-    <a href="<?php echo $his_all_bills; ?>">Bills</a>
-    <a href="<?php echo $logout_controller; ?>">Logout</a>
+    <a href="<?php echo $admin_dashboard ; ?>">Home</a>
+    <a class="active" href="<?php echo $admin_all_users ; ?>">Users</a>
+    <a href="<?php echo $admin_all_patients ; ?>">Patients</a>
+    <a href="<?php echo $admin_all_appointments ; ?>">Appointments</a>
+    <a href="<?php echo $admin_all_schedules ; ?>">Schedules</a>
+    <a href="<?php echo $admin_all_reports ; ?>">Reports</a>
+    <a href="<?php echo $admin_all_bills ; ?>">Bills</a>
+    <a href="<?php echo $admin_all_images ; ?>">Images</a>
+    <a href="<?php echo $admin_all_logs ; ?>">Logs</a>
+    <a href="<?php echo $logout_controller ; ?>">Logout</a>
 </div>
 
 <script>
-    //    Page Navigation
     function toggleNav() {
         let navPanel = document.getElementById('navPanel');
         if (navPanel.style.display === "none" || navPanel.style.display === "") {
@@ -481,6 +689,18 @@ $all_patients = findAllPatients();
             setTimeout(() => navPanel.style.display = "none", 300);
         }
     }
+
+    function searchTable() {
+        let input = document.getElementById("searchInput");
+        let filter = input.value.toLowerCase();
+        let rows = document.getElementById("tableBody").getElementsByTagName("tr");
+
+        for (let row of rows) {
+            let textContent = row.textContent.toLowerCase();
+            row.style.display = textContent.includes(filter) ? "" : "none";
+        }
+    }
+
 </script>
 
 <script>
@@ -609,6 +829,21 @@ $all_patients = findAllPatients();
     });
 </script>
 
+<!-- JavaScript for AJAX Request -->
+<script>
+    document.getElementById("create_role").addEventListener("change", function() {
+        let selectedRole = this.value;
+
+        if (selectedRole) {
+            fetch("generate_email.php?role=" + encodeURIComponent(selectedRole))
+                .then(response => response.text())
+                .then(email => {
+                    document.getElementById("create_email").value = email;
+                })
+                .catch(error => console.error("Error:", error));
+        }
+    });
+</script>
 
 
 

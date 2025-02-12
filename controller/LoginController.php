@@ -70,16 +70,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $_SESSION["user_role"] = $data["role"];
             $_SESSION["user_status"] = $data["status"];
 
-            if ($data['role'] === 'admin') {
+            if (strtolower($data['role']) === 'admin') {
                 header("Location: {$Admin_Dashboard_page}");
                 exit;
-            } elseif ($data['role'] === 'his'){
+            } elseif (strtolower($data['role']) === 'his'){
                 header("Location: {$HIS_Dashboard_page}");
                 exit;
-            }elseif ($data['role'] === 'pacs'){
+            }elseif (strtolower($data['role']) === 'pacs'){
                 header("Location: {$PACS_Dashboard_page}");
                 exit;
-            }elseif ($data['role'] === 'ris'){
+            }elseif (strtolower($data['role']) === 'ris'){
                 header("Location: {$RIS_Dashboard_page}");
                 exit;
             } else {

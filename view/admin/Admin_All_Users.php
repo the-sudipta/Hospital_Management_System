@@ -3,28 +3,55 @@ global $routes, $backend_routes, $image_routes;
 require '../../routes.php';
 require_once __DIR__ . '/../../model/CalculationRepo.php';
 require_once __DIR__ . '/../../view/Data_Provider.php';
-require_once __DIR__ . '/../../model/billingRepo.php';
+require_once __DIR__ . '/../../model/userRepo.php';
 //include '../Loader.php';
 
 // Navigation Routes Frontend
 $Login_page = $routes['login'];
-$his_dashboard = $routes["his_dashboard"];
-$his_all_appointment = $routes["his_all_appointments"];
-$his_all_bills = $routes["his_all_bills"];
-$his_all_patients = $routes["his_all_patients"];
-$his_create_appointment = $routes["his_create_appointment"];
-$his_create_bill = $routes["his_create_bill"];
-$his_create_patient = $routes["his_create_patient"];
-$his_single_appointment = $routes["his_single_appointment"];
-$his_single_bill = $routes["his_single_bill"];
-$his_single_patient = $routes["his_single_patient"];
+
+$admin_dashboard = $routes["admin_dashboard"];
+// Admin User Functionalities
+$admin_all_users = $routes["admin_all_users"];
+$admin_create_user = $routes["admin_create_user"];
+$admin_single_user = $routes["admin_single_user"];
+// Admin Patient Functionalities
+$admin_all_patients = $routes["admin_all_patients"];
+$admin_create_patient = $routes["admin_create_patient"];
+$admin_single_patient = $routes["admin_single_patient"];
+// Admin Appointment Functionalities
+$admin_all_appointments = $routes["admin_all_appointments"];
+$admin_create_appointment = $routes["admin_create_appointment"];
+$admin_single_appointment = $routes["admin_single_appointment"];
+// Admin Schedule Functionalities
+$admin_all_schedules = $routes["admin_all_schedules"];
+$admin_create_schedule = $routes["admin_create_schedule"];
+$admin_single_schedule = $routes["admin_single_schedule"];
+// Admin Report Functionalities
+$admin_all_reports = $routes["admin_all_reports"];
+$admin_create_report = $routes["admin_create_report"];
+$admin_single_report = $routes["admin_single_report"];
+// Admin Bill Functionalities
+$admin_all_bills = $routes["admin_all_bills"];
+$admin_create_bill = $routes["admin_create_bill"];
+$admin_single_bill = $routes["admin_single_bill"];
+// Admin Image Functionalities
+$admin_all_images = $routes["admin_all_images"];
+$admin_upload_image = $routes["admin_upload_image"];
+$admin_show_single_image = $routes["admin_show_single_image"];
+// Admin Log Functionalities
+$admin_all_logs = $routes["admin_all_logs"];
+$admin_create_log = $routes["admin_create_log"];
+$admin_single_log = $routes["admin_single_log"];
+
+
 
 
 
 
 // Backend Routes
 $logout_controller = $backend_routes['logout_controller'];
-$delete_bill_controller = $backend_routes['delete_bill_controller'];
+$delete_user_controller = $backend_routes['delete_user_controller'];
+$re_active_user_controller = $backend_routes['re_active_user_controller'];
 
 
 @session_start();
@@ -36,7 +63,7 @@ if($_SESSION["user_id"] <= 0){
 
 // Gather Necessary Data
 $user_id = $_SESSION["user_id"];
-$all_bills = findAllBillings();
+$all_users = findAllUsers();
 
 
 $error_message = "";
@@ -60,7 +87,7 @@ if (isset($_GET['message'])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HIS - All Billings</title>
+    <title>Admin - All Users</title>
     <style>
         * {
             margin: 0;
@@ -137,6 +164,7 @@ if (isset($_GET['message'])) {
             transform: translateY(20px);
             transition: transform 0.3s, opacity 0.3s;
             display: none;
+            z-index: 999;
         }
 
         .nav-panel.open {
@@ -208,6 +236,7 @@ if (isset($_GET['message'])) {
             padding: 12px;
             text-align: left;
             border-bottom: 1px solid #2d333b;
+
         }
 
         th {
@@ -217,6 +246,12 @@ if (isset($_GET['message'])) {
 
         td {
             color: #c9d1d9;
+        }
+
+        .table-container tbody tr td{
+            word-wrap: break-word;
+            white-space: normal;
+            overflow-wrap: break-word;
         }
 
         /* Custom Scrollbar */
@@ -307,6 +342,41 @@ if (isset($_GET['message'])) {
         .badge-completed { background: #2ecc71; }  /* Green */
         .badge-cancelled { background: #e74c3c; }  /* Red */
 
+        @keyframes borderAnimation {
+            0% {
+                border-image-source: linear-gradient(45deg, red, white);
+            }
+            50% {
+                border-image-source: linear-gradient(45deg, blue, white);
+            }
+            100% {
+                border-image-source: linear-gradient(45deg, green, white);
+            }
+        }
+
+        //* Style for visually disabled button */
+        .delete-btn:disabled {
+            background-color: #ccc !important;
+            color: #666 !important;
+            cursor: not-allowed !important;
+            border: 1px solid #999 !important;
+            opacity: 0.6;
+        }
+
+        /* Style for Re-Activate button */
+        .reactivate-btn {
+            background-color: #28a745; /* Green */
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        .reactivate-btn:hover {
+            background-color: #218838;
+        }
+
 
     </style>
 
@@ -374,54 +444,69 @@ if (isset($_GET['message'])) {
 
 <!-- Centered Table -->
 <div class="table-container" style="position: relative;">
-    <div class="add-new-button" style="position: absolute; top: 10px; left: 10px;" ><a href="<?php echo $his_create_bill; ?>" style="">+ Add New</a></div>
+    <div class="add-new-button" style="position: absolute; top: 10px; left: 10px;" ><a href="<?php echo $admin_create_user; ?>" style="">+ Add New</a></div>
     <input type="text" id="searchInput" onkeyup="searchTable()" placeholder="Search...">
     <table>
         <thead>
         <tr>
             <th>ID</th>
-            <th>Name</th>
-            <th>Amount</th>
+            <th>Email</th>
+            <th>Role</th>
+            <th>Created At</th>
             <th>Status</th>
-            <th>View</th>
-            <th>Delete</th>
+            <th>Action</th>
         </tr>
         </thead>
         <tbody id="tableBody">
         <?php
         $statuses = [
-            'pending' => 'badge-pending',
-            'paid' => 'badge-completed',  // Changed 'confirmed' to 'paid'
-            'unpaid' => 'badge-cancelled' // Changed 'completed' to 'unpaid'
+            'active' => 'badge-completed',
+            'deactivated' => 'badge-cancelled'
         ];
 
-        foreach ($all_bills as $bill) {
-            $patient_name = getPatientNameByID($bill['patient_id']);
-            $status_lower = strtolower($bill['status']);
+        foreach ($all_users as $user) {
+            $status_lower = strtolower($user['status']);
+            $role_lower = strtolower($user['role']);
             $badge_class = $statuses[$status_lower] ?? 'badge-default';
 
+            // Disable delete button if role is 'admin' OR status is 'deactivated'
+            $delete_disabled = ($role_lower === 'admin' || $status_lower === 'deactivated') ? 'disabled' : '';
+
             echo "<tr>
-            <td>{$bill['id']}</td>
-            <td>{$patient_name}</td>
-            <td>{$bill['amount']}</td>
-            <td><span class='badge $badge_class'>{$bill['status']}</span></td>
-            <td>
-                <form action='$his_single_bill' method='POST'>
-                    <input type='hidden' name='view_bill_id' value='{$bill['id']}'>
-                    <button type='submit' class='view-btn'>View</button>
-                </form>
-            </td>
-            <td>
-                <form action='$delete_bill_controller' method='POST'>
-                    <input type='hidden' name='delete_bill_id' value='{$bill['id']}'>
-                    <button type='submit' class='delete-btn'>Delete</button>
-                </form>
-            </td>
+            <td>{$user['id']}</td>
+            <td>{$user['email']}</td>
+            <td style='
+                        color: " .
+                ($role_lower == 'admin' ? '#ff4500' :  // Orange-Red
+                    ($role_lower == 'his' ? '#9b59b6' :   // Purple
+                        ($role_lower == 'pacs' ? '#e67e22' :  // Deep Orange
+                            ($role_lower == 'ris' ? '#f5f5f5' :   // Smoke-White (Off-White)
+                                '#555')))) . ";
+
+                        font-weight: bold;
+                        animation: borderAnimation 2s infinite alternate;
+                '>{$user['role']}</td>
+            <td>{$user['created_at']}</td>
+            <td><span class='badge $badge_class'>{$user['status']}</span></td>
+            <td>";
+
+            // Show "Delete" button for active users, "Re-Activate" button for deactivated users
+            if ($status_lower === 'deactivated') {
+                echo "<form action='$re_active_user_controller' method='POST'>
+                    <input type='hidden' name='reactivate_user_id' value='{$user['id']}'>
+                    <button type='submit' class='reactivate-btn'>Re-Activate</button>
+                  </form>";
+            } else {
+                echo "<form action='$delete_user_controller' method='POST'>
+                    <input type='hidden' name='delete_user_id' value='{$user['id']}'>
+                    <button type='submit' class='delete-btn' $delete_disabled>De-activate</button>
+                  </form>";
+            }
+
+            echo "</td>
           </tr>";
         }
         ?>
-
-
         </tbody>
     </table>
 </div>
@@ -432,10 +517,16 @@ if (isset($_GET['message'])) {
 
 <div class="nav-button" onclick="toggleNav()">☰</div>
 <div class="nav-panel" id="navPanel">
-    <a href="<?php echo $his_all_patients; ?>">Patients</a>
-    <a href="<?php echo $his_all_appointment; ?>">Appointments</a>
-    <a class="active" href="<?php echo $his_all_bills; ?>">Bills</a>
-    <a href="<?php echo $logout_controller; ?>">Logout</a>
+    <a href="<?php echo $admin_dashboard ; ?>">Home</a>
+    <a class="active" href="<?php echo $admin_all_users ; ?>">Users</a>
+    <a href="<?php echo $admin_all_patients ; ?>">Patients</a>
+    <a href="<?php echo $admin_all_appointments ; ?>">Appointments</a>
+    <a href="<?php echo $admin_all_schedules ; ?>">Schedules</a>
+    <a href="<?php echo $admin_all_reports ; ?>">Reports</a>
+    <a href="<?php echo $admin_all_bills ; ?>">Bills</a>
+    <a href="<?php echo $admin_all_images ; ?>">Images</a>
+    <a href="<?php echo $admin_all_logs ; ?>">Logs</a>
+    <a href="<?php echo $logout_controller ; ?>">Logout</a>
 </div>
 
 <script>

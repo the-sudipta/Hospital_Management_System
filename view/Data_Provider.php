@@ -61,3 +61,24 @@ function getReportTextByReportID($reportID)
 
     return null;
 }
+
+function getAllRoles()
+{
+    $all_user_info = findAllUsers();
+    $roles = [];
+
+    foreach ($all_user_info as $user) {
+        if (isset($user['role']) && !in_array($user['role'], $roles)) {
+            $roles[] = $user['role'];
+        }
+    }
+
+    return $roles;
+}
+
+
+function getRoleByUserID($id)
+{
+    $user = findUserByUserID($id);
+    return $user['role'] ?? null;
+}

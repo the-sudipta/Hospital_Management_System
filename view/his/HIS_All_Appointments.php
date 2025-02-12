@@ -121,6 +121,11 @@ if (isset($_GET['message'])) {
             background: #1f6feb;
         }
 
+        .active {
+            background: #1f6feb;
+        }
+
+
         .nav-panel {
             position: fixed;
             bottom: 80px;
@@ -428,7 +433,7 @@ if (isset($_GET['message'])) {
 <div class="nav-button" onclick="toggleNav()">☰</div>
 <div class="nav-panel" id="navPanel">
     <a href="<?php echo $his_all_patients; ?>">Patients</a>
-    <a href="<?php echo $his_all_appointment; ?>">Appointments</a>
+    <a class="active" href="<?php echo $his_all_appointment; ?>">Appointments</a>
     <a href="<?php echo $his_all_bills; ?>">Bills</a>
     <a href="<?php echo $logout_controller; ?>">Logout</a>
 </div>
