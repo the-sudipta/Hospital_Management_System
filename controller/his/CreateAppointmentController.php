@@ -5,7 +5,7 @@ global $routes;
 require '../../routes.php';
 
 
-require_once dirname(__DIR__)  . '/../model/appointmentRepo.php';
+require_once dirname(__DIR__) . '/../model/patientRepo.php';
 
 
 $Login_page = $routes['login'];
