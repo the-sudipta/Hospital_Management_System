@@ -3,8 +3,7 @@
 global $routes;
 require '../../routes.php';
 
-
-require_once __DIR__ . '/../../model/appointmentRepo.php';
+require_once dirname(__DIR__) . '/../model/appointmentRepo.php';
 
 
 @session_start();
