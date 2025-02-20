@@ -2,7 +2,7 @@ RewriteEngine On
 
 # Block direct access to PHP files inside the Controller folder
 RewriteCond %{THE_REQUEST} \s/+Controller/[^?]*\.php [NC]
-RewriteRule .* /Hospital_Management_System/view/error/403_forbidden_error.php [L,R=302]
+RewriteRule .* /view/error/403_forbidden_error.php [L,R=302]
 
 # Allow access from View, Model, or AJAX requests
 SetEnvIf Referer "http://localhost/Hospital_Management_System/view/" ALLOWED
@@ -16,4 +16,4 @@ RewriteCond %{ENV:ALLOWED} !^$
 RewriteRule .* - [L]
 
 # Redirect forbidden users to 403 page
-RewriteRule .* /Hospital_Management_System/view/error/403_forbidden_error.php [L,R=302]
+RewriteRule .* /view/error/403_forbidden_error.php [L,R=302]
