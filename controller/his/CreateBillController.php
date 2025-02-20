@@ -5,7 +5,7 @@ global $routes;
 require '../../routes.php';
 
 
-require_once __DIR__ . '/../../model/billingRepo.php';
+require_once dirname(__DIR__) . '/../model/billingRepo.php';
 
 
 $Login_page = $routes['login'];
