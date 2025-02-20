@@ -17,7 +17,7 @@ $user_id = $_SESSION['user_id'];
 $everythingOK = FALSE;
 $everythingOKCounter = 0;
 
-$delete_appointment_id = $_POST['delete_bill_id'];
+$delete_appointment_id = $_POST['delete_appointment_id'];
 
 $decision = false;
 
