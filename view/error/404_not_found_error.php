@@ -4,7 +4,7 @@
 <html lang="en" >
 <head>
     <meta charset="UTF-8">
-    <title>#8 404 page</title>
+    <title>Page Not Found</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <base href="//s3-us-west-2.amazonaws.com/s.cdpn.io/157670/">
     <style>
