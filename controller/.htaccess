@@ -1,19 +1,25 @@
 RewriteEngine On
 
-# Block direct access to PHP files inside the Controller folder
-RewriteCond %{THE_REQUEST} \s/+Controller/[^?]*\.php [NC]
-RewriteRule .* /view/error/403_forbidden_error.php [L,R=302]
-
-# Allow access from View, Model, or AJAX requests
-SetEnvIf Referer "http://localhost/Hospital_Management_System/view/" ALLOWED
-SetEnvIf Referer "http://localhost/Hospital_Management_System/controller/" ALLOWED
-SetEnvIf Referer "http://localhost/Hospital_Management_System/model/" ALLOWED
-SetEnvIf Referer "http://localhost/Hospital_Management_System/index.php" ALLOWED
-SetEnvIf Referer "http://localhost/Hospital_Management_System/routes.php" ALLOWED
-
-# Instead of 'Deny from all', use RewriteRule for redirection
-RewriteCond %{ENV:ALLOWED} !^$
+# Allow all POST requests (for AJAX/API/Form submissions)
+RewriteCond %{REQUEST_METHOD} POST
 RewriteRule .* - [L]
 
-# Redirect forbidden users to 403 page
+# Allow GET/POST requests only if they originate from inside "Hospital_Management_System/"
+RewriteCond %{REQUEST_URI} !^/php_projects/Hospital_Management_System/ [NC]
+RewriteRule .* //view/error/403_forbidden_error.php [L,R=302]
+
+# Allow requests only from your Hostinger subdomain (for extra security)
+RewriteCond %{HTTP_HOST} !^hospital-management-system\.sudiptakumar\.com$ [NC]
+RewriteRule .* /view/error/403_forbidden_error.php [L,R=302]
+
+# Allow local server access (localhost)
+RewriteCond %{REMOTE_ADDR} ^127\.0\.0\.1$ [OR]
+RewriteCond %{REMOTE_ADDR} ^::1$
+RewriteRule .* - [L]
+
+# Block direct access to PHP files inside the Controller folder
+RewriteCond %{REQUEST_URI} ^/php_projects/Hospital_Management_System/controller/.*\.php$ [NC]
+RewriteRule .* /view/error/403_forbidden_error.php [L,R=302]
+
+# Final catch-all rule to block unauthorized access
 RewriteRule .* /view/error/403_forbidden_error.php [L,R=302]
