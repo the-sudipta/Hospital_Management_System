@@ -5,7 +5,7 @@ global $routes;
 require '../routes.php';
 
 
-echo dirname(__DIR__) . '/model/UserRepo.php';
+require_once dirname(__DIR__) . '/model/UserRepo.php';
 
 
 @session_start();
