@@ -5,11 +5,11 @@ RewriteCond %{THE_REQUEST} \s/+controller/[^?]*\.php [NC]
 RewriteRule .* /Hospital_Management_System/view/error/403_forbidden_error.php [L,R=302]
 
 # Allow access from specific referers
-SetEnvIf Referer "^https://hospital-management-system.sudiptakumar.com/Hospital_Management_System/view/" ALLOWED
-SetEnvIf Referer "^https://hospital-management-system.sudiptakumar.com/Hospital_Management_System/controller/" ALLOWED
-SetEnvIf Referer "^https://hospital-management-system.sudiptakumar.com/Hospital_Management_System/model/" ALLOWED
-SetEnvIf Referer "^https://hospital-management-system.sudiptakumar.com/Hospital_Management_System/index.php" ALLOWED
-SetEnvIf Referer "^https://hospital-management-system.sudiptakumar.com/Hospital_Management_System/routes.php" ALLOWED
+SetEnvIf Referer "http://localhost/Hospital_Management_System/view/" ALLOWED
+SetEnvIf Referer "http://localhost/Hospital_Management_System/controller/" ALLOWED
+SetEnvIf Referer "http://localhost/Hospital_Management_System/model/" ALLOWED
+SetEnvIf Referer "http://localhost/Hospital_Management_System/index.php" ALLOWED
+SetEnvIf Referer "http://localhost/Hospital_Management_System/routes.php" ALLOWE
 
 # Allow if request is from an allowed referer
 Order Deny,Allow
