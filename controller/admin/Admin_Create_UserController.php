@@ -5,8 +5,9 @@ global $routes;
 require '../../routes.php';
 
 
-require_once __DIR__ . '/../../model/CalculationRepo.php';
-require_once __DIR__ . '/../../model/userRepo.php';
+require_once dirname(__DIR__) . '/model/CalculationRepo.php';
+require_once dirname(__DIR__) . '/model/userRepo.php';
+
 
 
 @session_start();
