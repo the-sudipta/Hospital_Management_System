@@ -29,7 +29,7 @@ if(isset($_SESSION['backend_error']) && isset($_SESSION['backend_error_location'
 <html lang="en" >
 <head>
     <meta charset="UTF-8">
-    <title>Error 500 page - SVG Animation</title>
+    <title>Internal Server Error</title>
     <style>
         @keyframes blink-fancy{
             0%, 25%, 28.33%, 45%, 48.33%, 51.67%, 93.33%, 96.67%{transform: scaleY(1);}
