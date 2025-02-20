@@ -4,7 +4,7 @@ global $routes;
 require '../../routes.php';
 
 
-require_once __DIR__ . '/../../model/reportRepo.php';
+require_once dirname(__DIR__) . '/../model/reportRepo.php';
 
 
 @session_start();
