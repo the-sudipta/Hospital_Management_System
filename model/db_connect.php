@@ -9,9 +9,9 @@ $database_error_page = $routes["database_error"];
 function db_conn()
 {
     $servername = "localhost";
-    $username = "root";
-    $password = "";
-    $dbname = "hospital_management_system";
+    $username = "u899200555_hospital_manag";
+    $password = "Hospital_Manag#1";
+    $dbname = "u899200555_hospital_manag";
 
     // Create connection
     $conn = new mysqli($servername, $username, $password, $dbname);
