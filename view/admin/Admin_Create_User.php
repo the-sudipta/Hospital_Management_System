@@ -638,7 +638,7 @@ $suggested_user_password = generateUserPassword();
         </div>
 
         <select id="create_role" name="create_role" class="custom-dropdown">
-            <option value="" disabled selected>Select Test Type</option>
+            <option value="" disabled selected>Select User Type</option>
             <?php foreach ($all_roles as $role) : ?>
                 <option value="<?php echo htmlspecialchars($role); ?>">
                     <?php echo htmlspecialchars($role); ?>
