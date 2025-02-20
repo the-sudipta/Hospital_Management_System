@@ -4,7 +4,7 @@ global $routes;
 require '../../routes.php';
 
 
-require_once __DIR__ . '/../../model/test_scheduleRepo.php';
+require_once dirname(__DIR__) . '/../model/test_scheduleRepo.php';
 
 
 @session_start();
